@@ -9395,11 +9395,29 @@ public class Win32
   [DllImport("user32", EntryPoint="SetWindowText", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
   public static extern int SetWindowText ( IntPtr hWnd, string lpString );
   
+  [DllImport("user32", EntryPoint="SetWindowTextA", SetLastError=true, CharSet=CharSet.None, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int SetWindowTextA ( IntPtr hWnd, string lpString );
+  
+  [DllImport("user32", EntryPoint="SetWindowTextW", SetLastError=true, CharSet=CharSet.None, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int SetWindowTextW ( IntPtr hWnd, string lpString );
+  
   [DllImport("user32", EntryPoint="GetWindowText", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
   public static extern int GetWindowText ( IntPtr hWnd, string lpString, int cch );
   
+  [DllImport("user32", EntryPoint="GetWindowTextA", SetLastError=true, CharSet=CharSet.Ansi, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int GetWindowTextA ( IntPtr hWnd, IntPtr lpString, int cch );
+  
+  [DllImport("user32", EntryPoint="GetWindowTextW", SetLastError=true, CharSet=CharSet.Unicode, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int GetWindowTextW ( IntPtr hWnd, IntPtr lpString, int cch );
+  
   [DllImport("user32", EntryPoint="GetWindowTextLength", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
   public static extern int GetWindowTextLength ( IntPtr hWnd );
+  
+  [DllImport("user32", EntryPoint="GetWindowTextLengthA", SetLastError=true, CharSet=CharSet.Ansi, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int GetWindowTextLengthA ( IntPtr hWnd );
+  
+  [DllImport("user32", EntryPoint="GetWindowTextLengthW", SetLastError=true, CharSet=CharSet.Unicode, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int GetWindowTextLengthW ( IntPtr hWnd );
   
   
   [DllImport("user32", EntryPoint="GetClientRect", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
@@ -9643,7 +9661,7 @@ public class Win32
   
   
   [DllImport("user32", EntryPoint="GetParent", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
-  public static extern int GetParent ( IntPtr hWnd );
+  public static extern IntPtr GetParent ( IntPtr hWnd );
   
   [DllImport("user32", EntryPoint="SetParent", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
   public static extern int SetParent ( IntPtr hWndChild, IntPtr hWndNewParent );

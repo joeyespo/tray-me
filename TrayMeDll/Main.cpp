@@ -1,20 +1,17 @@
-/***************************************************************
-Module name: HookInjEx_DLL.cpp
-Copyright (c) 2003 Robert Kuster
-
-Notice:  If this code works, it was written by Robert Kuster.
-    Else, I don't know who wrote it.
-
-    Use it on your own risk. No responsibilities for
-    possible damages of even functionality can be taken.
-***************************************************************/
-
-
-// !!!!! ToDo
+// TrayMe Dll
+// By Joe Esposito
+// 2004-07-26
 // 
-// - Option: When window is shown .. 'unhide' tray icon
+// HookInjEx by Robert Kuster
 // 
-// !!!!!
+// Note:
+//   Use this at your own risk. No responsibilities for
+//   possible damages of even functionality can be taken.
+// 
+// 
+// OPTION: When window is shown .. 'unhide' tray icon
+// OPTION: Sounds
+// 
 
 
 #include "Main.h"
@@ -23,6 +20,22 @@ Notice:  If this code works, it was written by Robert Kuster.
 
 //-------------------------------------------------------------
 // Defines
+
+
+#ifdef _WIN64
+# define SAFE_LONG_PTR  LONG_PTR
+#else
+# define SAFE_LONG_PTR  LONG
+#endif
+
+// Disable size [32/64 bit] conversion warnings
+#pragma warning( disable : 4311 )
+#pragma warning( disable : 4312 )
+
+
+
+//-------------------------------------------------------------
+// Defines (app)
 // 
 
 #define pCW ((CWPSTRUCT*)lParam)
@@ -185,11 +198,11 @@ LRESULT HookProc (int code, WPARAM wParam, LPARAM lParam)
     
     // Subclass window
     if (::IsWindowUnicode(g_hWnd) == 0) {
-      if ((g_OldProc = (WNDPROC)::SetWindowLongA(g_hWnd, GWL_WNDPROC, (long)NewProc)) == NULL)
+      if ((g_OldProc = (WNDPROC)::SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)NewProc)) == NULL)
       { ::FreeLibrary(hDll); goto END; }
     }
     else {
-      if ((g_OldProc = (WNDPROC)::SetWindowLongW(g_hWnd, GWL_WNDPROC, (long)NewProc)) == NULL)
+      if ((g_OldProc = (WNDPROC)::SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)NewProc)) == NULL)
       { ::FreeLibrary(hDll); goto END; }
     }
     
@@ -208,11 +221,11 @@ LRESULT HookProc (int code, WPARAM wParam, LPARAM lParam)
     // Why? Because then process would call "unmapped" NewProc and crash!!
     if (::IsWindowUnicode(g_hWnd) == 0) {
       SendMessageA(g_hWnd, WM_TRAYME_TRAYNOTIFY, ID_TRAYME_TRAYEDWINDOW, WM_LBUTTONDBLCLK);
-      if ((WNDPROC)SetWindowLongA(g_hWnd, GWL_WNDPROC, (long)g_OldProc) == 0) goto END;
+      if ((WNDPROC)SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc) == 0) goto END;
     }
     else {
       SendMessageW(g_hWnd, WM_TRAYME_TRAYNOTIFY, ID_TRAYME_TRAYEDWINDOW, WM_LBUTTONDBLCLK);
-      if ((WNDPROC)SetWindowLongW(g_hWnd, GWL_WNDPROC, (long)g_OldProc) == 0) goto END;
+      if ((WNDPROC)SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc) == 0) goto END;
     }
     
     // Success
@@ -445,6 +458,12 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     
     switch (uMsg)
     {
+      // Workaround to Outlook Express 'feature'
+      case WM_DISPLAYCHANGE:
+        if (IsWindowVisible(hWnd) == FALSE)
+          return 0;
+        break;
+      
       case WM_SYSCOMMAND:
         if (wParam != SC_CLOSE) break;
       case WM_CLOSE:
@@ -455,7 +474,7 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         
         if (g_bInTray)
         { ::ShowWindow(hWnd, SW_HIDE); return 0; }
-
+        
         // Set up charset-specific info
         if (::IsWindowUnicode(hWnd))
         {
@@ -511,8 +530,8 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         
         // Unsubclass window
         if (::IsWindowUnicode(hWnd))
-        { ::SetWindowLongW(g_hWnd, GWL_WNDPROC, (long)g_OldProc); }
-        else { ::SetWindowLongA(g_hWnd, GWL_WNDPROC, (long)g_OldProc); }
+        { ::SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc); }
+        else { ::SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc); }
         
         // Handle current message
         lResult = ::CallWindowProc(g_OldProc, hWnd, uMsg, wParam, lParam);

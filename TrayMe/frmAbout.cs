@@ -283,8 +283,13 @@ namespace TrayMe
     
     private void lnkWebLink_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
     {
-      // Call the Process.Start method to open the default browser with a URL:
-      System.Diagnostics.Process.Start("http://www.uber-ware.com");
+      try
+      {
+        // Call the Process.Start method to open the default browser with a URL:
+        System.Diagnostics.Process.Start("http://www.uber-ware.com/");
+      }
+      catch
+      {}
     }
     
     private void lnkWebLink_MouseEnter(object sender, System.EventArgs e)

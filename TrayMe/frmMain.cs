@@ -1,10 +1,11 @@
 // frmMain.sc
 // By Joe Esposito
 
-// TODO: Themable (windows themes)
-// TODO: Get icon to work with all windows [icon/traybar version ?]
-// TODO: Check for top-level window .. work with ONLY top-level windows! (not for WinEye, though)
-// TODO: Get to work with multiple windows
+// !!!!! TODO !!!!!
+// * Get icon to work with all windows [icon/traybar version ?]
+// * Check for top-level window .. work with ONLY top-level windows! (not for WinEye, though)
+// - Get to work with multiple windows
+// - Themable (windows themes)
 
 
 using System;
@@ -60,7 +61,7 @@ namespace TrayMe
     private MenuItem mnuTrayExit;
     
     #endregion
-
+    
     
     
     
@@ -320,9 +321,7 @@ namespace TrayMe
     
     #region Entry Point of Application
     
-    /// <summary>
-    /// The main entry point for the application.
-    /// </summary>
+    /// <summary> The main entry point for the application. </summary>
     [STAThread]
     static void Main() 
     {
@@ -387,7 +386,7 @@ namespace TrayMe
     
     #endregion
     
-    #region Form Member Events
+    #region Form Control Events
     
     // Form Member Events
     // -------------------
@@ -478,6 +477,7 @@ namespace TrayMe
     private void picTarget_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
     {
       IntPtr hWnd;
+      IntPtr hTemp;
       
       // End targeting
       bTargeting = false;
@@ -492,6 +492,10 @@ namespace TrayMe
       
       // Get screen coords from client coords and window handle
       hWnd = Win32Ex.WindowFromPoint(picTarget.Handle, e.X, e.Y);
+      
+      // Get owner
+      while ((hTemp = Win32.GetParent(hWnd)) != IntPtr.Zero) hWnd = hTemp;
+      
       ShowWindowInfo(hWnd, true);
       
       // Release capture
@@ -515,6 +519,7 @@ namespace TrayMe
       // Get screen coords from client coords and window handle
       hWnd = Win32Ex.WindowFromPoint(picTarget.Handle, e.X, e.Y);
       
+      // Get real window
       if (hWnd != IntPtr.Zero) {
         hTemp = IntPtr.Zero;
         
@@ -536,6 +541,9 @@ namespace TrayMe
         }
         // */
       }
+      
+      // Get owner
+      while ((hTemp = Win32.GetParent(hWnd)) != IntPtr.Zero) hWnd = hTemp;
       
       // Show info
       ShowWindowInfo(hWnd, true);

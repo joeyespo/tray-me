@@ -8,6 +8,7 @@ Notice:	If this code works, it was written by Robert Kuster.
 		Use it on your own risk. No responsibilities for
 		possible damages of even functionality can be taken.
 ***************************************************************/
+
 #if !defined INJECT_EX__H
 #define INJECT_EX__H
 

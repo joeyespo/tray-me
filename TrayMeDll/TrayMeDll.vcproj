@@ -12,8 +12,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory="Build\Debug"
+			IntermediateDirectory="Build\"
 			ConfigurationType="2"
 			CharacterSet="2">
 			<Tool
@@ -31,7 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/TrayMeDll.dll"
+				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMeDll.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/TrayMeDll.pdb"
@@ -55,8 +55,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory="Build\Release"
+			IntermediateDirectory="Build\"
 			ConfigurationType="2"
 			CharacterSet="0">
 			<Tool
@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:&quot;IsSubclassed&quot;=IsSubclassed /export:&quot;InjectDll&quot;=InjectDll /export:&quot;UnmapDll&quot;=UnmapDll "
-				OutputFile="$(OutDir)/TrayMeDll.dll"
+				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMeDll.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -104,10 +104,6 @@
 	</Configurations>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
-		</Filter>
-		<Filter
 			Name="Entry Point"
 			Filter="">
 			<File
@@ -116,10 +112,6 @@
 			<File
 				RelativePath="Main.h">
 			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc">
 		</Filter>
 	</Files>
 	<Globals>

@@ -3,6 +3,7 @@
 
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 
 /// <summary> Win32 API. </summary>
@@ -11,14 +12,49 @@ public class Win32Ex : Win32
   
   public static string GetWindowText (IntPtr hWnd)
   {
-    string strTemp;
+    int cch;
+    IntPtr lpString;
+    String sResult;
     
+    // !!!!! System.Text.Encoding
     if (IsWindow(hWnd) == 0) return "";
     
-    strTemp = new String(Convert.ToChar(32), (GetWindowTextLength(hWnd) + 1));
-    GetWindowText(hWnd, strTemp, strTemp.Length);
-    
-    return strTemp;
+    if (Win32.IsWindowUnicode(hWnd) != 0)
+    {
+      // Allocate new Unicode string
+      lpString = Marshal.AllocHGlobal((cch = (Win32.GetWindowTextLengthW(hWnd) + 1)) * 2);
+      
+      // Get window Unicode text
+      Win32.GetWindowTextW(hWnd, lpString, cch);
+      
+      // Get managed string from Unicode string
+      sResult = Marshal.PtrToStringUni(lpString, cch);
+      
+      // Free allocated Unicode string
+      Marshal.FreeHGlobal(lpString);
+      lpString = IntPtr.Zero;
+      
+      // Return managed string
+      return sResult;
+    }
+    else 
+    {
+      // Allocate new ANSI string
+      lpString = Marshal.AllocHGlobal((cch = (Win32.GetWindowTextLengthA(hWnd) + 1)));
+      
+      // Get window ANSI text
+      Win32.GetWindowTextA(hWnd, lpString, cch);
+      
+      // Get managed string from ANSI string
+      sResult = Marshal.PtrToStringAnsi(lpString, cch);
+      
+      // Free allocated ANSI string
+      Marshal.FreeHGlobal(lpString);
+      lpString = IntPtr.Zero;
+      
+      // Return managed string
+      return sResult;
+    }
   }
   
   public static void DoEvents ()
