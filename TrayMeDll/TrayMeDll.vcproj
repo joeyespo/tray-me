@@ -31,12 +31,13 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMeDll.dll"
+				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMe.dll"
+				Version="1.1"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/TrayMeDll.pdb"
+				ProgramDatabaseFile="$(OutDir)/TrayMe.pdb"
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/TrayMeDll.lib"
+				ImportLibrary="$(OutDir)/TrayMe.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -78,13 +79,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:&quot;IsSubclassed&quot;=IsSubclassed /export:&quot;InjectDll&quot;=InjectDll /export:&quot;UnmapDll&quot;=UnmapDll "
-				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMeDll.dll"
+				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMe.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(OutDir)/TrayMeDll.lib"
+				ImportLibrary="$(OutDir)/TrayMe.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -111,6 +112,16 @@
 			</File>
 			<File
 				RelativePath="Main.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resources"
+			Filter="">
+			<File
+				RelativePath="TrayMeDll.rc">
+			</File>
+			<File
+				RelativePath="resource.h">
 			</File>
 		</Filter>
 	</Files>

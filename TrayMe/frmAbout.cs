@@ -4,35 +4,39 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+
 namespace TrayMe
 {
 	/// <summary> Summary description for frmAbout. </summary>
 	public class frmAbout : System.Windows.Forms.Form
 	{
+    
     #region Form Variables
     
-    internal Label lblVersion;
-    internal PictureBox picLogo;
-    internal Panel panAbout;
-    internal LinkLabel lnkWebLink;
-    internal Label lblWebTitle;
-    internal Label lblAuthor;
-    internal Panel picDescription;
-    internal Label lblDescription;
-    internal Label lblTitle;
-    internal Button btnClose;
-    internal Label lblBuild;
+    // Constant values
+    const string AppTitle = "TrayMe [Stand-Alone Version]";
+    const string AppDescription = "TrayMe is a Windows Tool that easily helps a user organize his or her windows and save them from window congestion by use of the System Tray.";
     
-    #endregion
-		
+    // >> Icon is located on the window
     
+    #region Controls
     
-    #region Internal Information
-    
-    #region Internal Private Members
+    private Label lblVersion;
+    private PictureBox picLogo;
+    private Panel panAbout;
+    private LinkLabel lnkWebLink;
+    private Label lblWebTitle;
+    private Label lblAuthor;
+    private Panel picDescription;
+    private Label lblDescription;
+    private Label lblTitle;
+    private Button btnClose;
+    private Label lblRevision;
     
     /// <summary> Required designer variable. </summary>
-		private System.ComponentModel.Container components = null;
+    private System.ComponentModel.Container components = null;
+    
+    #endregion
     
     #endregion
 		
@@ -43,30 +47,27 @@ namespace TrayMe
 		{
 			// Required for Windows Form Designer support
 			InitializeComponent();
+
+      lblTitle.Text = AppTitle;
+      lblDescription.Text = AppDescription;
 		}
     
     /// <summary> Clean up any resources being used. </summary>
 		protected override void Dispose( bool disposing )
 		{
 			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
+			{ if(components != null) components.Dispose(); }
 			base.Dispose( disposing );
 		}
     
-    #endregion
-		
     #region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+		
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmAbout));
       this.lblVersion = new System.Windows.Forms.Label();
       this.picLogo = new System.Windows.Forms.PictureBox();
@@ -78,7 +79,7 @@ namespace TrayMe
       this.lblDescription = new System.Windows.Forms.Label();
       this.lblTitle = new System.Windows.Forms.Label();
       this.btnClose = new System.Windows.Forms.Button();
-      this.lblBuild = new System.Windows.Forms.Label();
+      this.lblRevision = new System.Windows.Forms.Label();
       this.panAbout.SuspendLayout();
       this.picDescription.SuspendLayout();
       this.SuspendLayout();
@@ -182,8 +183,7 @@ namespace TrayMe
       this.lblDescription.Name = "lblDescription";
       this.lblDescription.Size = new System.Drawing.Size(256, 48);
       this.lblDescription.TabIndex = 6;
-      this.lblDescription.Text = "TrayMe is a Windows Tool that easily helps a user organize his or her windows and" +
-        " save them from window congestion by use of the System Tray.";
+      this.lblDescription.Text = "[ Description ]";
       this.lblDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
       // lblTitle
@@ -193,7 +193,7 @@ namespace TrayMe
       this.lblTitle.Name = "lblTitle";
       this.lblTitle.Size = new System.Drawing.Size(248, 16);
       this.lblTitle.TabIndex = 8;
-      this.lblTitle.Text = "TrayMe  [Stand-Alone Version]";
+      this.lblTitle.Text = "[ Title ]";
       this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // btnClose
@@ -205,15 +205,15 @@ namespace TrayMe
       this.btnClose.TabIndex = 7;
       this.btnClose.Text = "&Close";
       // 
-      // lblBuild
+      // lblRevision
       // 
-      this.lblBuild.AutoSize = true;
-      this.lblBuild.ForeColor = System.Drawing.SystemColors.GrayText;
-      this.lblBuild.Location = new System.Drawing.Point(68, 220);
-      this.lblBuild.Name = "lblBuild";
-      this.lblBuild.Size = new System.Drawing.Size(33, 13);
-      this.lblBuild.TabIndex = 11;
-      this.lblBuild.Text = "Build:";
+      this.lblRevision.AutoSize = true;
+      this.lblRevision.ForeColor = System.Drawing.SystemColors.GrayText;
+      this.lblRevision.Location = new System.Drawing.Point(68, 220);
+      this.lblRevision.Name = "lblRevision";
+      this.lblRevision.Size = new System.Drawing.Size(51, 13);
+      this.lblRevision.TabIndex = 11;
+      this.lblRevision.Text = "Revision:";
       // 
       // frmAbout
       // 
@@ -223,11 +223,11 @@ namespace TrayMe
       this.ClientSize = new System.Drawing.Size(306, 264);
       this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                   this.lblVersion,
+                                                                  this.lblRevision,
                                                                   this.picLogo,
                                                                   this.panAbout,
                                                                   this.lblTitle,
-                                                                  this.btnClose,
-                                                                  this.lblBuild});
+                                                                  this.btnClose});
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
@@ -241,40 +241,33 @@ namespace TrayMe
       this.ResumeLayout(false);
 
     }
-		#endregion
+		
+    #endregion
     
     #endregion
     
     
     
-    #region Form Events
-    
     #region Form Creation Events
     
     private void frmAbout_Load(object sender, System.EventArgs e)
     {
+      string m_strProductVersion;
       string m_strVersion;
-      string m_strBuild;
+      string m_strRevision;
       int i;
       
-      m_strVersion = System.Windows.Forms.Application.ProductVersion;
+      m_strProductVersion = System.Windows.Forms.Application.ProductVersion;
       
-      i = m_strVersion.IndexOf(".");
-      if (i >= 0) i = m_strVersion.IndexOf(".", (i + 1));
+      i = m_strProductVersion.IndexOf(".");
+      if (i >= 0) i = m_strProductVersion.IndexOf(".", (i + 1));
+      m_strVersion = (( i >= 0 )?( m_strProductVersion.Substring(0, i) ):( "0" ));
       
-      if (i >= 0) 
-      {
-        m_strBuild = m_strVersion.Substring(i + 1);
-        m_strVersion = m_strVersion.Substring(0, i);
-      }
-      else 
-      {
-        m_strBuild = "0";
-        m_strVersion = "0";
-      }
+      if (i >= 0) i = m_strProductVersion.IndexOf(".", (i + 1));
+      m_strRevision = (( i >= 0 )?( m_strProductVersion.Substring(i + 1) ):( "0" ));
       
       lblVersion.Text = "Version: " + m_strVersion;
-      lblBuild.Text = "[Build: " + m_strBuild + "]";
+      lblRevision.Text = "[Revision: " + m_strRevision + "]";
     }
     
     #endregion
@@ -286,10 +279,13 @@ namespace TrayMe
       try
       {
         // Call the Process.Start method to open the default browser with a URL:
-        System.Diagnostics.Process.Start("http://www.uber-ware.com/");
+        System.Diagnostics.Process.Start("http://www.uber-ware.com");
       }
       catch
-      {}
+      {
+        // Failsafe
+        MessageBox.Show(this, "Could not start browser process.", "Czt", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
     
     private void lnkWebLink_MouseEnter(object sender, System.EventArgs e)
@@ -299,9 +295,7 @@ namespace TrayMe
     { lnkWebLink.LinkColor = lnkWebLink.ForeColor; }
     
     private void lblVersion_Resize(object sender, System.EventArgs e)
-    { lblBuild.Left = lblVersion.Left + lblVersion.Width; }
-    
-    #endregion
+    { lblRevision.Left = lblVersion.Left + lblVersion.Width; }
     
     #endregion
     

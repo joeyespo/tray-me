@@ -12,15 +12,19 @@
 // OPTION: When window is shown .. 'unhide' tray icon
 // OPTION: Sounds
 // 
+// !!!!! Protect from multiple subclasses
+//       (when unmapping, if current subclass proc ptr does not match window's subclass proc ptr,
+//       then DO NOT unmap, but instead continue to use current subclass's proc ptr (WndPric) until
+//       it matches window's subclass proc ptr, then unmap as normal)
+// 
 
 
 #include "Main.h"
 
 
 
-//-------------------------------------------------------------
-// Defines
-
+// Local Defines
+// --------------
 
 #ifdef _WIN64
 # define SAFE_LONG_PTR  LONG_PTR
@@ -34,29 +38,26 @@
 
 
 
-//-------------------------------------------------------------
-// Defines (app)
-// 
+// Application Defines
+// --------------------
 
-#define pCW ((CWPSTRUCT*)lParam)
-#define pMSG ((MSG*)lParam)
 #define ID_TRAYME_TRAYEDWINDOW    1001
 
 
 
-//-------------------------------------------------------------
-// shared data 
-// Notice:  seen by both: the instance of "HookInjEx.dll" mapped
-//      into window as well as by the instance
-//      of "HookInjEx.dll" mapped into our "HookInjEx.exe"
+// Shared Variables
+// -----------------
+
+// Notice: seen by all instances of this Dll
 
 #pragma data_seg (".shared")
 
 volatile bool g_bSubclassed = false;
-UINT WM_TRAYME_HOOKEX = 0;
-UINT WM_TRAYME_TRAYNOTIFY = 0;
-HWND g_hWnd = 0;
-HHOOK g_hHook = 0;
+UINT WM_TRAYME_HOOKEX = NULL;
+UINT WM_TRAYME_TRAYNOTIFY = NULL;
+HWND g_hWnd = NULL;
+HHOOK g_hHook = NULL;
+HMENU g_hMenu = NULL;
 
 #pragma data_seg ()
 
@@ -64,10 +65,10 @@ HHOOK g_hHook = 0;
 
 
 
-//-------------------------------------------------------------
-// global variables (unshared!)
-//
-HINSTANCE  hDll;
+// Global Variables
+// -----------------
+
+HINSTANCE  g_hDll;
 bool g_bInTray = false;
 
 // Version info
@@ -80,31 +81,42 @@ LRESULT CALLBACK NewProc ( HWND, UINT, WPARAM, LPARAM );
 
 
 
-//-------------------------------------------------------------
-// global functions
-//
+// Local Function Declarations
+//-----------------------------
+
+bool LocalUnmapDll ( bool bIndirectUnmap );
+
+void GetVersionWin9x ();
+bool DoTrayContextMenu ( HWND hWnd );
+bool ShowTrayedWindow ( HWND hWnd );
+bool FreeLibraryAndExit ();
+DWORD WINAPI DllTerminationProc ( LPVOID lpParameter );
+
+
+
+// Global Functions
+// -----------------
 
 BOOL WINAPI IsSubclassed ()
 { return (( g_bSubclassed )?( TRUE ):( FALSE )); }
 
 
 
-//-------------------------------------------------------------
-// DllMain
-//
+// Entry Point of Dll
+// -------------------
 
 BOOL APIENTRY DllMain (HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
-  ::MessageBeep(MB_ICONASTERISK);
+  MessageBeep(MB_ICONASTERISK);
   
   if (ul_reason_for_call == DLL_PROCESS_ATTACH)
   {
     // !!!!! Not supported in CE
-    ::DisableThreadLibraryCalls(hDll = (HINSTANCE)hModule);
+    DisableThreadLibraryCalls(g_hDll = (HINSTANCE)hModule);
     
     // Register Ansi windows message   !!!!! Not supported in CE
-    if (WM_TRAYME_HOOKEX == NULL) WM_TRAYME_HOOKEX = ::RegisterWindowMessageA("TRAYME@@WM_TRAYME_HOOKEX");
-    if (WM_TRAYME_TRAYNOTIFY == NULL) WM_TRAYME_TRAYNOTIFY = ::RegisterWindowMessageA("TRAYME@@WM_TRAYME_TRAYNOTIFY");
+    if (WM_TRAYME_HOOKEX == NULL) WM_TRAYME_HOOKEX = RegisterWindowMessageA("TRAYME@@WM_TRAYME_HOOKEX");
+    if (WM_TRAYME_TRAYNOTIFY == NULL) WM_TRAYME_TRAYNOTIFY = RegisterWindowMessageA("TRAYME@@WM_TRAYME_TRAYNOTIFY");
   }
   else if (ul_reason_for_call == DLL_PROCESS_DETACH)
   {
@@ -118,39 +130,22 @@ BOOL APIENTRY DllMain (HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 }
 
 
-//-------------------------------------------------------------
-// IsVersionWin9x
-//
-
-void GetVersionWin9x ()
-{
-  OSVERSIONINFO osvi;
-  
-  // Get version info
-  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  GetVersionEx(&osvi);
-  
-  // Get Win9x value
-  bWin9x = ((osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) && (osvi.dwMajorVersion == 4));
-}
-
-
 
 //-------------------------------------------------------------
 // HookProc
 // Notice:
 // - executed by the instance of "HookInjEx.dll" mapped into window;
 // 
-// When called from InjectDll:
-//    - sublasses the window;
-//    - removes the hook, but the DLL stays in the remote process
-//    though, because we increased its reference count via LoadLibray
-//    (this way we disturb the target process as litle as possible);
+// When called from InjectDll():
+//    - Sublasses the window
+//    - Removes the hook, but the DLL stays in the remote process
+//      though, because we increased its reference count via LoadLibray
+//      (this way we disturb the target process as litle as possible)
 // 
 // When called from UnmapDll:
-//    - restores the old window procedure for the window;
-//    - reduces the reference count of the DLL (via FreeLibrary);
-//    - removes the hook, so the DLL is unmapped;
+//    - Restores the old window procedure for the window
+//    - Reduces the reference count of the DLL (via FreeLibrary)
+//    - Removes the hook, so the DLL is unmapped
 // 
 //    Also note, that the DLL isn't unmapped immediately after the
 //    call to UnhookWindowsHookEx, but in the near future
@@ -169,7 +164,6 @@ LRESULT HookProc (int code, WPARAM wParam, LPARAM lParam)
 {
   char lib_name [MAX_PATH];
   bool bInjectMessage;
-  bool bHook;
   
   // Failsafe
   if (g_hWnd == NULL) goto END;
@@ -181,62 +175,86 @@ LRESULT HookProc (int code, WPARAM wParam, LPARAM lParam)
   
   // Get hook value
   if (bWin9x)
-  { bHook = (pMSG->lParam != 0); bInjectMessage = (pMSG->message == WM_TRAYME_HOOKEX); }
-  else { bHook = (pCW->lParam != 0); bInjectMessage = (pCW->message == WM_TRAYME_HOOKEX); }
+    bInjectMessage = (((LPMSG)lParam)->message == WM_TRAYME_HOOKEX);
+  else
+    bInjectMessage = (((LPCWPSTRUCT)lParam)->message == WM_TRAYME_HOOKEX);
   
-  // Set window procedure
-  if ((bInjectMessage) && (bHook))
+  if (bInjectMessage)
   {
-    ::UnhookWindowsHookEx(g_hHook);
+    bool bHook;
     
-    // already subclassed?
-    if (g_bSubclassed) goto END;
+    // Get hook value
+    if (bWin9x)
+      bHook = (((LPMSG)lParam)->wParam != 0);
+    else
+      bHook = (((LPCWPSTRUCT)lParam)->wParam != 0);
     
-    // Increase the reference count of the DLL (via LoadLibrary), so it's NOT unmapped once the hook is removed
-    ::GetModuleFileNameA(hDll, lib_name, MAX_PATH);
-    if (!::LoadLibraryA(lib_name)) goto END;
-    
-    // Subclass window
-    if (::IsWindowUnicode(g_hWnd) == 0) {
-      if ((g_OldProc = (WNDPROC)::SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)NewProc)) == NULL)
-      { ::FreeLibrary(hDll); goto END; }
+    // Set window procedure
+    if (bHook)
+    {
+      // Unhook the hook
+      UnhookWindowsHookEx(g_hHook);
+      
+      // already subclassed?
+      if (g_bSubclassed) goto END;
+      
+      // Increase the reference count of the DLL (via LoadLibrary), so it's NOT unmapped once the hook is removed
+      GetModuleFileNameA(g_hDll, lib_name, MAX_PATH);
+      if (!LoadLibraryA(lib_name)) goto END;
+      
+      // Subclass window
+      if (IsWindowUnicode(g_hWnd) == 0) {
+        if ((g_OldProc = (WNDPROC)SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)NewProc)) == NULL)
+        { FreeLibrary(g_hDll); goto END; }
+      }
+      else {
+        if ((g_OldProc = (WNDPROC)SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)NewProc)) == NULL)
+        { FreeLibrary(g_hDll); goto END; }
+      }
+      
+      // Success
+      MessageBeep(MB_OK);
+      g_bSubclassed = true;
     }
-    else {
-      if ((g_OldProc = (WNDPROC)::SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)NewProc)) == NULL)
-      { ::FreeLibrary(hDll); goto END; }
+    else
+    {
+      bool bIndirectUnhook;
+      
+      if (bWin9x)
+      { if (!bHook) bIndirectUnhook = (((LPMSG)lParam)->lParam != 0); }
+      else
+      { if (!bHook) bIndirectUnhook = (((LPCWPSTRUCT)lParam)->lParam != 0); }
+      
+      // Unhook the hook
+      UnhookWindowsHookEx(g_hHook);
+      
+      // Unmap Dll
+      if (!g_bSubclassed) return NULL;
+      
+      // Show window (if not already shown)
+      ShowTrayedWindow(g_hWnd);
+      
+      // If failed to restore old window procedure => don't unmap the DLL either.
+      // Why? Because then process would call "unmapped" NewProc and crash!!
+      if (IsWindowUnicode(g_hWnd) == 0)
+      { if ((WNDPROC)SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc) == 0) goto END; }
+      else
+      { if ((WNDPROC)SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc) == 0) goto END; }
+      
+      // Success
+      g_bSubclassed = false;
+      MessageBeep(MB_OK);
+      
+      if (bIndirectUnhook)
+        FreeLibraryAndExit();
+      else
+        FreeLibrary(g_hDll);
     }
-    
-    // Success
-    ::MessageBeep(MB_OK);
-    g_bSubclassed = true;
-  }
-  else if (bInjectMessage)
-  {
-    ::UnhookWindowsHookEx(g_hHook);
-    
-    // Unmap Dll
-    if (!g_bSubclassed) return NULL;
-    
-    // If failed to restore old window procedure => don't unmap the DLL either.
-    // Why? Because then process would call "unmapped" NewProc and crash!!
-    if (::IsWindowUnicode(g_hWnd) == 0) {
-      SendMessageA(g_hWnd, WM_TRAYME_TRAYNOTIFY, ID_TRAYME_TRAYEDWINDOW, WM_LBUTTONDBLCLK);
-      if ((WNDPROC)SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc) == 0) goto END;
-    }
-    else {
-      SendMessageW(g_hWnd, WM_TRAYME_TRAYNOTIFY, ID_TRAYME_TRAYEDWINDOW, WM_LBUTTONDBLCLK);
-      if ((WNDPROC)SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc) == 0) goto END;
-    }
-    
-    // Success
-    g_bSubclassed = false;
-    ::MessageBeep(MB_OK);
-    ::FreeLibrary(hDll);
   }
 
 END:
   
-  return ::CallNextHookEx(g_hHook, code, wParam, lParam);
+  return CallNextHookEx(g_hHook, code, wParam, lParam);
 }
 
 
@@ -244,7 +262,7 @@ END:
 //-------------------------------------------------------------
 // InjectDll
 // Notice: 
-//  - injects "HookInjEx.dll" into window (via SetWindowsHookEx);
+//  - Injects "TrayMeDll.dll" into window (via SetWindowsHookEx);
 //  - subclasses the window (see HookProc for more details);
 //
 //    Parameters: - hWnd = window handle
@@ -264,7 +282,7 @@ BOOL WINAPI InjectDll (HWND hWnd)
   
   
   // Set global vars
-  if (!::IsWindow(hWnd)) goto BAD;
+  if (!IsWindow(hWnd)) goto BAD;
   g_hWnd = hWnd;
   
   // Get window version
@@ -272,21 +290,23 @@ BOOL WINAPI InjectDll (HWND hWnd)
   { GetVersionWin9x(); bWin9x_Known = true; }
   
   // Hook window
-  if (( g_hHook = ::SetWindowsHookExA(((bWin9x)?(WH_GETMESSAGE):(WH_CALLWNDPROC)), (HOOKPROC)HookProc, hDll, GetWindowThreadProcessId(hWnd, NULL)) ) == NULL)
+  if (( g_hHook = SetWindowsHookExA(((bWin9x)?(WH_GETMESSAGE):(WH_CALLWNDPROC)), (HOOKPROC)HookProc, g_hDll, GetWindowThreadProcessId(hWnd, NULL)) ) == NULL)
     goto BAD;
   
   // By the time SendMessage returns, the window has already been subclassed
   if (bWin9x)
   {
-    if (::IsWindowUnicode(g_hWnd))
-    { while (!::PostMessageW(g_hWnd, WM_TRAYME_HOOKEX, 0, 1)); }
-    else { while (!::PostMessageA(g_hWnd, WM_TRAYME_HOOKEX, 0, 1)); }
+    if (IsWindowUnicode(g_hWnd))
+    { while (!PostMessageW(g_hWnd, WM_TRAYME_HOOKEX, 1, 0)); }
+    else
+    { while (!PostMessageA(g_hWnd, WM_TRAYME_HOOKEX, 1, 0)); }
   }
   else
   {
-    if (::IsWindowUnicode(g_hWnd))
-    { ::SendMessageW(g_hWnd, WM_TRAYME_HOOKEX, 0, 1); }
-    else { ::SendMessageA(g_hWnd, WM_TRAYME_HOOKEX, 0, 1); }
+    if (IsWindowUnicode(g_hWnd))
+      SendMessageW(g_hWnd, WM_TRAYME_HOOKEX, 1, 0);
+    else
+      SendMessageA(g_hWnd, WM_TRAYME_HOOKEX, 1, 0);
   }
   
   // Check for subclassing
@@ -314,6 +334,9 @@ BAD:
 //
 
 BOOL WINAPI UnmapDll ()
+{ return (( LocalUnmapDll(false) )?( TRUE ):( FALSE )); }
+
+bool LocalUnmapDll (bool bIndirectUnmap)
 {
   static bool g_bIsUnSubclassing = false;
   
@@ -326,21 +349,23 @@ BOOL WINAPI UnmapDll ()
   // Get window version
   if (!bWin9x_Known) GetVersionWin9x();
   
-  if (( g_hHook = ::SetWindowsHookExA(((bWin9x)?(WH_GETMESSAGE):(WH_CALLWNDPROC)), (HOOKPROC)HookProc, hDll, GetWindowThreadProcessId(g_hWnd,NULL)) ) == NULL)
+  if (( g_hHook = SetWindowsHookExA(((bWin9x)?(WH_GETMESSAGE):(WH_CALLWNDPROC)), (HOOKPROC)HookProc, g_hDll, GetWindowThreadProcessId(g_hWnd,NULL)) ) == NULL)
     goto BAD;
   
   // By the time SendMessage returns, the window has already been subclassed
   if (bWin9x)
   {
-    if (::IsWindowUnicode(g_hWnd))
-    { while (!::PostMessageW(g_hWnd, WM_TRAYME_HOOKEX, 0, 0)); }
-    else { while (!::PostMessageA(g_hWnd, WM_TRAYME_HOOKEX, 0, 0)); }
+    if (IsWindowUnicode(g_hWnd))
+    { while (!PostMessageW(g_hWnd, WM_TRAYME_HOOKEX, 0, (( bIndirectUnmap )?( 1 ):( 0 )) )); }
+    else
+    { while (!PostMessageA(g_hWnd, WM_TRAYME_HOOKEX, 0, (( bIndirectUnmap )?( 1 ):( 0 )) )); }
   }
   else
   {
-    if (::IsWindowUnicode(g_hWnd))
-    { ::SendMessageW(g_hWnd, WM_TRAYME_HOOKEX, 0, 0); }
-    else { ::SendMessageA(g_hWnd, WM_TRAYME_HOOKEX, 0, 0); }
+    if (IsWindowUnicode(g_hWnd))
+      SendMessageW(g_hWnd, WM_TRAYME_HOOKEX, 0, (( bIndirectUnmap )?( 1 ):( 0 )) );
+    else
+      SendMessageA(g_hWnd, WM_TRAYME_HOOKEX, 0, (( bIndirectUnmap )?( 1 ):( 0 )) );
   }
   
   // Check for subclassing
@@ -357,45 +382,12 @@ BAD:
 
 
 
-
-
-
-//-------------------------------------------------------------
-// DllTerminationProc
-// Notice:  - Unmaps the Dll and exits the thread;
-//  
-
-DWORD WINAPI DllTerminationProc(LPVOID lpParameter)
-{
-  // Wait enough time for the Dll to stop being used
-  Sleep(200);
-  
-  // No longer subclassed
-  g_bSubclassed = false;
-  
-  // Double-beep for error
-  ::MessageBeep(MB_OK);
-  
-  // Unmap DLL
-  FreeLibraryAndExitThread(hDll, 0);
-  return 0;
-}
-
-
-
-
-
-
-//-------------------------------------------------------------
-// NewProc
-// Notice:  - new window procedure for the window;
-//      - it just swaps the left & right muse clicks;
-//  
+// Subclassed Windows Procedure
+// -----------------------------
 
 LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   LRESULT lResult;
-  HANDLE hThread;
   
   union {
     NOTIFYICONDATAA nidA;
@@ -417,35 +409,14 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
       switch(lParam)
       {
-        /* !!!!!
         case WM_RBUTTONUP:
           
-          GetCursorPos(&pxy);
-          
-          // !!!!! Use menu trick to get rid of 'feature'
-          TrackPopupMenuEx(hSysTrayPopup_Menu, (TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RIGHTBUTTON), ((pxy.x) + 1), (pxy.y), hWnd, NULL);
+          DoTrayContextMenu(hWnd);
           break;
-        */
         
         case WM_LBUTTONDBLCLK:
-          
-          // Set up charset-specific info
-          if (::IsWindowUnicode(hWnd)) {
-            // Delete tray icon
-            nidW.cbSize = sizeof (NOTIFYICONDATAW); // !!!!! NOTIFYICONDATA_V1_SIZE;
-            nidW.hWnd = hWnd; nidW.uID = ID_TRAYME_TRAYEDWINDOW;
-            if (::Shell_NotifyIconW(NIM_DELETE, &nidW) == 0) return false;
-          }
-          else {
-            // Delete tray icon
-            nidA.cbSize = sizeof (NOTIFYICONDATAA); // !!!!! NOTIFYICONDATA_V1_SIZE;
-            nidA.hWnd = hWnd; nidA.uID = ID_TRAYME_TRAYEDWINDOW;
-            if (::Shell_NotifyIconA(NIM_DELETE, &nidA) == 0) return false;
-          }
-          
-          // Show window
-          ::ShowWindow(hWnd, SW_SHOWNORMAL);
-          g_bInTray = false;
+          if (ShowTrayedWindow(hWnd))
+            return TRUE;
           break;
       }
     }
@@ -473,74 +444,67 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         { GetVersionWin9x(); bWin9x_Known = true; }
         
         if (g_bInTray)
-        { ::ShowWindow(hWnd, SW_HIDE); return 0; }
+        { ShowWindow(hWnd, SW_HIDE); return 0; }
         
         // Set up charset-specific info
-        if (::IsWindowUnicode(hWnd))
+        if (IsWindowUnicode(hWnd))
         {
           // Set up notify icon
-          nidW.cbSize = sizeof (NOTIFYICONDATAW); // !!!!! NOTIFYICONDATAW_V1_SIZE;
+          nidW.cbSize = sizeof (NOTIFYICONDATAW);
           nidW.hWnd = hWnd; nidW.uID = ID_TRAYME_TRAYEDWINDOW;
           nidW.uCallbackMessage = WM_TRAYME_TRAYNOTIFY;
           nidW.uFlags = (NIF_ICON | NIF_MESSAGE | NIF_TIP);
           
           // Get text
-          if (::GetWindowTextW(hWnd, chTempW, sizeof(chTempW)) == 0) chTempW[0] = NULL;
+          if (GetWindowTextW(hWnd, chTempW, sizeof(chTempW)) == 0) chTempW[0] = NULL;
           wcscpy(nidW.szTip, chTempW);
           
-          // !!!!! Create/copy icon
+          // Create/copy icon
           if (((nidW.hIcon = (HICON)SendMessageW(hWnd, WM_GETICON, ((bWin9x)?(ICON_SMALL):(2)), 0)) == NULL) && ((nidW.hIcon = (HICON)GetClassLongW(hWnd, GCL_HICONSM)) == NULL))
             if (((nidW.hIcon = (HICON)SendMessageW(hWnd, WM_GETICON, ICON_BIG, 0)) == NULL) && ((nidW.hIcon = (HICON)GetClassLongW(hWnd, GCL_HICON)) == NULL))
               nidW.hIcon = (HICON)LoadImageW(NULL, MAKEINTRESOURCEW(32512), IMAGE_ICON, 0, 0, (LR_CREATEDIBSECTION));
           
-          //if (((nidW.hIcon = (HICON)SendMessageW(hWnd, WM_GETICON, ((bWin9x)?(ICON_SMALL):(2)), 0)) == NULL) || ((nidW.hIcon = (HICON)GetClassLongW(hWnd, GCL_HICONSM)) == NULL))
-          //  if (((nidW.hIcon = (HICON)SendMessageW(hWnd, WM_GETICON, ICON_BIG, 0)) == NULL) || ((nidW.hIcon = (HICON)GetClassLongW(hWnd, GCL_HICON)) == NULL))
-          //    nidW.hIcon = (HICON)LoadImageW(NULL, MAKEINTRESOURCEW(32512), IMAGE_ICON, 0, 0, (LR_CREATEDIBSECTION));
-          
           // Add to System Tray
-          if (::Shell_NotifyIconW(NIM_ADD, &nidW) == 0) return 0;
+          if (Shell_NotifyIconW(NIM_ADD, &nidW) == 0) return 0;
         }
         else
         {
           // Set up notify icon
-          nidA.cbSize = sizeof (NOTIFYICONDATAA); // !!!!! NOTIFYICONDATAA_V1_SIZE;
+          nidA.cbSize = sizeof (NOTIFYICONDATAA);
           nidA.hWnd = hWnd; nidA.uID = ID_TRAYME_TRAYEDWINDOW;
           nidA.uCallbackMessage = WM_TRAYME_TRAYNOTIFY;
           nidA.uFlags = (NIF_ICON | NIF_MESSAGE | NIF_TIP);
           
           // Get text
-          if (::GetWindowTextA(hWnd, chTempA, sizeof(chTempA)) == 0) chTempA[0] = NULL;
+          if (GetWindowTextA(hWnd, chTempA, sizeof(chTempA)) == 0) chTempA[0] = NULL;
           strcpy(nidA.szTip, chTempA);
           
-          // !!!!! Create/copy icon
+          // Create/copy icon
           if (((nidA.hIcon = (HICON)SendMessageA(hWnd, WM_GETICON, ((bWin9x)?(ICON_SMALL):(2)), 0)) == NULL) && ((nidA.hIcon = (HICON)GetClassLongA(hWnd, GCL_HICONSM)) == NULL))
             if (((nidA.hIcon = (HICON)SendMessageA(hWnd, WM_GETICON, ICON_BIG, 0)) == NULL) && ((nidA.hIcon = (HICON)GetClassLongA(hWnd, GCL_HICON)) == NULL))
               nidA.hIcon = (HICON)LoadImageA(NULL, MAKEINTRESOURCEA(32512), IMAGE_ICON, 0, 0, (LR_CREATEDIBSECTION));
           
           // Add to System Tray
-          if (::Shell_NotifyIconA(NIM_ADD, &nidA) == 0) return 0;
+          if (Shell_NotifyIconA(NIM_ADD, &nidA) == 0) return 0;
         }
         
         // Hide window
         g_bInTray = true;
-        ::ShowWindow(hWnd, SW_HIDE);
+        ShowWindow(hWnd, SW_HIDE);
         return 0;
       
       case WM_DESTROY:
         
         // Unsubclass window
-        if (::IsWindowUnicode(hWnd))
-        { ::SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc); }
-        else { ::SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc); }
+        if (IsWindowUnicode(hWnd))
+        { SetWindowLongPtrW(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc); }
+        else { SetWindowLongPtrA(g_hWnd, GWL_WNDPROC, (SAFE_LONG_PTR)g_OldProc); }
         
         // Handle current message
-        lResult = ::CallWindowProc(g_OldProc, hWnd, uMsg, wParam, lParam);
+        lResult = CallWindowProc(g_OldProc, hWnd, uMsg, wParam, lParam);
         
-        // Create termination thread, then resume it and close the handle
-        hThread = ::CreateThread(NULL, 0, DllTerminationProc, NULL, CREATE_SUSPENDED, 0);
-        ::SetThreadPriority(hThread, THREAD_PRIORITY_IDLE);
-        ::ResumeThread(hThread);
-        ::CloseHandle(hThread);
+        // Unmap the library and exit in separate thread
+        FreeLibraryAndExit();
         
         // Successful destruction of window and Dll unmapping
         return lResult;
@@ -549,5 +513,149 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   }
   
   
-  return ::CallWindowProc(g_OldProc, hWnd, uMsg, wParam, lParam);
+  return CallWindowProc(g_OldProc, hWnd, uMsg, wParam, lParam);
+}
+
+
+
+// Local Functions
+// ----------------
+
+void GetVersionWin9x ()
+{
+  OSVERSIONINFO osvi;
+  
+  // Get version info
+  osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  GetVersionEx(&osvi);
+  
+  // Get Win9x value
+  bWin9x = ((osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) && (osvi.dwMajorVersion == 4));
+}
+
+bool DoTrayContextMenu (HWND hWnd)
+{
+  HMENU hMenu;
+  
+  if ((hMenu= CreatePopupMenu()) == NULL)
+    return false;
+  
+  if (IsWindowUnicode(hWnd)) {
+    MENUITEMINFOW miiw; ZeroMemory(&miiw, sizeof(miiw));
+    miiw.cbSize = sizeof(miiw); miiw.wID = (WORD)(1);
+    if (bWin9x) {
+      miiw.fMask = (MIIM_ID | MIIM_STATE | MIIM_TYPE);
+      miiw.fType = (MFT_STRING);
+      miiw.fState = (MFS_ENABLED | MFS_DEFAULT);
+    }
+    else {
+      miiw.fMask = (MIIM_ID | MIIM_STATE | MIIM_STRING);
+      miiw.fState = (MFS_ENABLED | MFS_DEFAULT);
+    }
+    miiw.dwTypeData = L"Show"; miiw.cch = 4;
+    InsertMenuItemW(hMenu, 0, TRUE, &miiw);
+    
+    AppendMenuW(hMenu, (MF_SEPARATOR), 0, NULL);
+    AppendMenuW(hMenu, (MF_STRING | MF_ENABLED), 2, L"Untray Me");
+  }
+  else {
+    MENUITEMINFOA miia; ZeroMemory(&miia, sizeof(miia));
+    miia.cbSize = sizeof(miia); miia.wID = (WORD)(1);
+    if (bWin9x) {
+      miia.fMask = (MIIM_ID | MIIM_STATE | MIIM_TYPE);
+      miia.fType = (MFT_STRING);
+      miia.fState = (MFS_ENABLED | MFS_DEFAULT);
+    }
+    else {
+      miia.fMask = (MIIM_ID | MIIM_STATE | MIIM_STRING);
+      miia.fState = (MFS_ENABLED | MFS_DEFAULT);
+    }
+    miia.dwTypeData = "Show"; miia.cch = 4;
+    InsertMenuItemA(hMenu, 0, TRUE, &miia);
+    
+    AppendMenuA(hMenu, (MF_SEPARATOR), 0, NULL);
+    AppendMenuA(hMenu, (MF_STRING | MF_ENABLED), 2, "Untray Me");
+  }
+  
+  // !!!!! Use menu trick to get rid of 'feature'
+  POINT pt; GetCursorPos(&pt);
+  INT nResult = TrackPopupMenuEx(hMenu, (TPM_RETURNCMD | TPM_NONOTIFY | TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RIGHTBUTTON), ((pt.x) + 1), (pt.y), hWnd, NULL);
+  DestroyMenu(hMenu);
+  
+  // Get selection
+  switch (nResult)
+  {
+    case 1: ShowTrayedWindow(hWnd); break;
+    case 2: LocalUnmapDll(true); break;
+  }
+  
+  // Success
+  return (nResult != 0);
+}
+
+bool ShowTrayedWindow (HWND hWnd)
+{
+  union {
+    NOTIFYICONDATAA nidA;
+    NOTIFYICONDATAW nidW;
+  };
+  
+  if (!g_bInTray)
+    return false;
+  
+  // Get window version
+  if (!bWin9x_Known)
+  { GetVersionWin9x(); bWin9x_Known = true; }
+  
+  // Set up charset-specific info
+  if (IsWindowUnicode(hWnd)) {
+    // Delete tray icon
+    nidW.cbSize = sizeof (NOTIFYICONDATAW);
+    nidW.hWnd = hWnd; nidW.uID = ID_TRAYME_TRAYEDWINDOW;
+    if (Shell_NotifyIconW(NIM_DELETE, &nidW) == 0) return false;
+  }
+  else {
+    // Delete tray icon
+    nidA.cbSize = sizeof (NOTIFYICONDATAA);
+    nidA.hWnd = hWnd; nidA.uID = ID_TRAYME_TRAYEDWINDOW;
+    if (Shell_NotifyIconA(NIM_DELETE, &nidA) == 0) return false;
+  }
+
+  // Show window
+  ShowWindow(hWnd, SW_SHOWNORMAL);
+  g_bInTray = false;
+  
+  return true;
+}
+
+// Unmaps the Dll and creates a new thread for exiting
+bool FreeLibraryAndExit ()
+{
+  HANDLE hThread;
+  
+  // Create termination thread, then resume it and close the handle
+  hThread = CreateThread(NULL, 0, DllTerminationProc, (LPVOID)g_hDll, CREATE_SUSPENDED, 0);
+  SetThreadPriority(hThread, THREAD_PRIORITY_IDLE);
+  ResumeThread(hThread);
+  CloseHandle(hThread);
+  
+  return true;
+}
+
+// Unmaps the Dll and exits the thread
+DWORD WINAPI DllTerminationProc (LPVOID lpParameter)
+{
+  // !!!!! WaitForSingleObject() ??
+  // Wait enough time for the Dll to stop being used
+  Sleep(200);
+  
+  // No longer subclassed
+  g_bSubclassed = false;
+  
+  // Double-beep for error
+  MessageBeep(MB_OK);
+  
+  // Unmap DLL
+  FreeLibraryAndExitThread((HMODULE)lpParameter, 0);
+  return 0;
 }

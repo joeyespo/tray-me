@@ -61,6 +61,7 @@ namespace TrayMe
     private MenuItem mnuTrayExit;
     
     #endregion
+    private System.Windows.Forms.CheckBox chkTopmost;
     
     
     
@@ -123,6 +124,7 @@ namespace TrayMe
       this.txtUni = new System.Windows.Forms.TextBox();
       this.lblFinderTool = new System.Windows.Forms.Label();
       this.btnAbout = new System.Windows.Forms.Button();
+      this.chkTopmost = new System.Windows.Forms.CheckBox();
       this.gpbTrayMe.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -186,6 +188,7 @@ namespace TrayMe
       // gpbTrayMe
       // 
       this.gpbTrayMe.Controls.AddRange(new System.Windows.Forms.Control[] {
+                                                                            this.chkTopmost,
                                                                             this.picTarget,
                                                                             this.btnAttach,
                                                                             this.lblHandle,
@@ -292,6 +295,17 @@ namespace TrayMe
       this.btnAbout.Text = "&About...";
       this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
       // 
+      // chkTopmost
+      // 
+      this.chkTopmost.Checked = true;
+      this.chkTopmost.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.chkTopmost.Location = new System.Drawing.Point(20, 148);
+      this.chkTopmost.Name = "chkTopmost";
+      this.chkTopmost.Size = new System.Drawing.Size(116, 16);
+      this.chkTopmost.TabIndex = 14;
+      this.chkTopmost.Text = "Topmost";
+      this.chkTopmost.CheckedChanged += new System.EventHandler(this.chkTopmost_CheckedChanged);
+      // 
       // frmMain
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -307,6 +321,7 @@ namespace TrayMe
       this.Name = "frmMain";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "TrayMe - Inactive";
+      this.TopMost = true;
       this.Closing += new System.ComponentModel.CancelEventHandler(this.frmMain_Closing);
       this.Load += new System.EventHandler(this.frmMain_Load);
       this.gpbTrayMe.ResumeLayout(false);
@@ -427,6 +442,9 @@ namespace TrayMe
       
       CheckTrayStatus();
     }
+
+    private void chkTopmost_CheckedChanged(object sender, System.EventArgs e)
+    { TopMost = chkTopmost.Checked; }
     
     private void txtHandle_TextChanged(object sender, System.EventArgs e)
     {

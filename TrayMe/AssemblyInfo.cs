@@ -7,11 +7,11 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("TrayMe")]
-[assembly: AssemblyDescription("Add any application to the traybar [notification window]")]
+[assembly: AssemblyDescription("Add any application to the traybar (notification window)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("uber-ware")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCompany("Uber-ware")]
+[assembly: AssemblyProduct("TrayMe")]
+[assembly: AssemblyCopyright("Copyright (C) 2004 Uber-ware")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
