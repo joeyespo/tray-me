@@ -114,6 +114,7 @@ namespace TrayMe
       this.btnClose = new System.Windows.Forms.Button();
       this.btnHide = new System.Windows.Forms.Button();
       this.gpbTrayMe = new System.Windows.Forms.GroupBox();
+      this.chkTopmost = new System.Windows.Forms.CheckBox();
       this.picTarget = new System.Windows.Forms.PictureBox();
       this.btnAttach = new System.Windows.Forms.Button();
       this.lblHandle = new System.Windows.Forms.Label();
@@ -124,7 +125,6 @@ namespace TrayMe
       this.txtUni = new System.Windows.Forms.TextBox();
       this.lblFinderTool = new System.Windows.Forms.Label();
       this.btnAbout = new System.Windows.Forms.Button();
-      this.chkTopmost = new System.Windows.Forms.CheckBox();
       this.gpbTrayMe.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -172,7 +172,7 @@ namespace TrayMe
       this.btnClose.Location = new System.Drawing.Point(276, 92);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(100, 29);
-      this.btnClose.TabIndex = 2;
+      this.btnClose.TabIndex = 3;
       this.btnClose.Text = "Cl&ose";
       this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
       // 
@@ -202,8 +202,19 @@ namespace TrayMe
       this.gpbTrayMe.Location = new System.Drawing.Point(8, 8);
       this.gpbTrayMe.Name = "gpbTrayMe";
       this.gpbTrayMe.Size = new System.Drawing.Size(260, 192);
-      this.gpbTrayMe.TabIndex = 4;
+      this.gpbTrayMe.TabIndex = 0;
       this.gpbTrayMe.TabStop = false;
+      // 
+      // chkTopmost
+      // 
+      this.chkTopmost.Checked = true;
+      this.chkTopmost.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.chkTopmost.Location = new System.Drawing.Point(20, 148);
+      this.chkTopmost.Name = "chkTopmost";
+      this.chkTopmost.Size = new System.Drawing.Size(116, 16);
+      this.chkTopmost.TabIndex = 7;
+      this.chkTopmost.Text = "Topmost";
+      this.chkTopmost.CheckedChanged += new System.EventHandler(this.chkTopmost_CheckedChanged);
       // 
       // picTarget
       // 
@@ -222,7 +233,7 @@ namespace TrayMe
       this.btnAttach.Location = new System.Drawing.Point(144, 148);
       this.btnAttach.Name = "btnAttach";
       this.btnAttach.Size = new System.Drawing.Size(100, 28);
-      this.btnAttach.TabIndex = 12;
+      this.btnAttach.TabIndex = 8;
       this.btnAttach.Text = "&Tray Me!";
       this.btnAttach.Click += new System.EventHandler(this.btnAttach_Click);
       // 
@@ -231,7 +242,7 @@ namespace TrayMe
       this.lblHandle.Location = new System.Drawing.Point(16, 72);
       this.lblHandle.Name = "lblHandle";
       this.lblHandle.Size = new System.Drawing.Size(48, 16);
-      this.lblHandle.TabIndex = 6;
+      this.lblHandle.TabIndex = 1;
       this.lblHandle.Text = "H&andle:";
       // 
       // txtHandle
@@ -240,7 +251,7 @@ namespace TrayMe
       this.txtHandle.MaxLength = 8;
       this.txtHandle.Name = "txtHandle";
       this.txtHandle.Size = new System.Drawing.Size(72, 20);
-      this.txtHandle.TabIndex = 10;
+      this.txtHandle.TabIndex = 2;
       this.txtHandle.Text = "";
       this.txtHandle.TextChanged += new System.EventHandler(this.txtHandle_TextChanged);
       // 
@@ -249,7 +260,7 @@ namespace TrayMe
       this.lblCaption.Location = new System.Drawing.Point(16, 96);
       this.lblCaption.Name = "lblCaption";
       this.lblCaption.Size = new System.Drawing.Size(48, 16);
-      this.lblCaption.TabIndex = 4;
+      this.lblCaption.TabIndex = 3;
       this.lblCaption.Text = "&Caption:";
       // 
       // txtCaption
@@ -258,7 +269,7 @@ namespace TrayMe
       this.txtCaption.Name = "txtCaption";
       this.txtCaption.ReadOnly = true;
       this.txtCaption.Size = new System.Drawing.Size(176, 20);
-      this.txtCaption.TabIndex = 9;
+      this.txtCaption.TabIndex = 4;
       this.txtCaption.Text = "";
       // 
       // lblUni
@@ -266,7 +277,7 @@ namespace TrayMe
       this.lblUni.Location = new System.Drawing.Point(16, 120);
       this.lblUni.Name = "lblUni";
       this.lblUni.Size = new System.Drawing.Size(48, 16);
-      this.lblUni.TabIndex = 7;
+      this.lblUni.TabIndex = 5;
       this.lblUni.Text = "C&harset:";
       // 
       // txtUni
@@ -275,7 +286,7 @@ namespace TrayMe
       this.txtUni.Name = "txtUni";
       this.txtUni.ReadOnly = true;
       this.txtUni.Size = new System.Drawing.Size(176, 20);
-      this.txtUni.TabIndex = 8;
+      this.txtUni.TabIndex = 6;
       this.txtUni.Text = "";
       // 
       // lblFinderTool
@@ -283,7 +294,7 @@ namespace TrayMe
       this.lblFinderTool.Location = new System.Drawing.Point(16, 36);
       this.lblFinderTool.Name = "lblFinderTool";
       this.lblFinderTool.Size = new System.Drawing.Size(84, 16);
-      this.lblFinderTool.TabIndex = 6;
+      this.lblFinderTool.TabIndex = 0;
       this.lblFinderTool.Text = "&Finder Tool:";
       // 
       // btnAbout
@@ -291,20 +302,9 @@ namespace TrayMe
       this.btnAbout.Location = new System.Drawing.Point(276, 12);
       this.btnAbout.Name = "btnAbout";
       this.btnAbout.Size = new System.Drawing.Size(100, 29);
-      this.btnAbout.TabIndex = 2;
+      this.btnAbout.TabIndex = 1;
       this.btnAbout.Text = "&About...";
       this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
-      // 
-      // chkTopmost
-      // 
-      this.chkTopmost.Checked = true;
-      this.chkTopmost.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.chkTopmost.Location = new System.Drawing.Point(20, 148);
-      this.chkTopmost.Name = "chkTopmost";
-      this.chkTopmost.Size = new System.Drawing.Size(116, 16);
-      this.chkTopmost.TabIndex = 14;
-      this.chkTopmost.Text = "Topmost";
-      this.chkTopmost.CheckedChanged += new System.EventHandler(this.chkTopmost_CheckedChanged);
       // 
       // frmMain
       // 
@@ -356,14 +356,13 @@ namespace TrayMe
     
     private void frmMain_Load(object sender, System.EventArgs e)
     {
-      Assembly asm = Assembly.GetExecutingAssembly();
-      
       // Create Resources
       // -----------------
       
       try
       {
         // Load cursors
+        Assembly asm = Assembly.GetExecutingAssembly();
         m_curTarget = new Cursor(asm.GetManifestResourceStream("TrayMe.curTarget.cur"));
       }
       catch (Exception x )
@@ -416,8 +415,12 @@ namespace TrayMe
     private void btnAttach_Click(object sender, System.EventArgs e)
     {
       IntPtr hWnd;
-      TrayMeClass objTrayMe = new TrayMeClass();
       
+      // Failsafe
+      if (!CheckTrayStatus()) return;
+      
+      // Check for trayed window
+      TrayMeClass objTrayMe = new TrayMeClass();
       if (objTrayMe.IsHooked())
       {
         if (objTrayMe.HookTrayWindow(IntPtr.Zero, IntPtr.Zero) == true)
@@ -638,14 +641,40 @@ namespace TrayMe
       Win32Ex.HighlightWindow(hWnd);
     }
     
-    private void CheckTrayStatus ()
+    private bool CheckTrayStatus ()
     {
       TrayMeClass objTrayMe = new TrayMeClass();
       
-      if (objTrayMe.IsHooked())
-      {  if (!m_bSubclassed) { btnAttach.Text = "Un-Tray Me"; m_bSubclassed = true; }  }
-      else  
-      {  if (m_bSubclassed) { btnAttach.Text = "Tray Me!"; m_bSubclassed = false; }  }
+      try
+      {
+        if (objTrayMe.IsHooked())
+        { if (!m_bSubclassed) { btnAttach.Text = "Un-Tray Me"; m_bSubclassed = true; } }
+        else  
+        { if (m_bSubclassed) { btnAttach.Text = "Tray Me!"; m_bSubclassed = false; } }
+        
+        if (!btnAttach.Enabled)
+          btnAttach.Enabled = true;
+        
+        return true;
+      } 
+      catch (DllNotFoundException e)
+      {
+        if (btnAttach.Enabled)
+        {
+          btnAttach.Enabled = false;
+          btnAttach.Text = "Missing Dll";
+        }
+      }
+      catch (EntryPointNotFoundException e)
+      {
+        if (btnAttach.Enabled)
+        {
+          btnAttach.Enabled = false;
+          btnAttach.Text = "Bad Dll";
+        }
+      }
+      
+      return false;
     }
     
     private void ShowTrayStatus ()

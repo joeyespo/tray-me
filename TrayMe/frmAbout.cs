@@ -91,7 +91,7 @@ namespace TrayMe
       this.lblVersion.Location = new System.Drawing.Point(12, 220);
       this.lblVersion.Name = "lblVersion";
       this.lblVersion.Size = new System.Drawing.Size(46, 13);
-      this.lblVersion.TabIndex = 12;
+      this.lblVersion.TabIndex = 3;
       this.lblVersion.Text = "Version:";
       this.lblVersion.Resize += new System.EventHandler(this.lblVersion_Resize);
       // 
@@ -117,7 +117,7 @@ namespace TrayMe
       this.panAbout.Location = new System.Drawing.Point(12, 48);
       this.panAbout.Name = "panAbout";
       this.panAbout.Size = new System.Drawing.Size(284, 160);
-      this.panAbout.TabIndex = 9;
+      this.panAbout.TabIndex = 2;
       // 
       // lnkWebLink
       // 
@@ -132,7 +132,7 @@ namespace TrayMe
       this.lnkWebLink.Location = new System.Drawing.Point(160, 136);
       this.lnkWebLink.Name = "lnkWebLink";
       this.lnkWebLink.Size = new System.Drawing.Size(116, 13);
-      this.lnkWebLink.TabIndex = 8;
+      this.lnkWebLink.TabIndex = 3;
       this.lnkWebLink.TabStop = true;
       this.lnkWebLink.Text = "www.uber-ware.com";
       this.lnkWebLink.VisitedLinkColor = System.Drawing.Color.FromArgb(((System.Byte)(154)), ((System.Byte)(175)), ((System.Byte)(162)));
@@ -149,7 +149,7 @@ namespace TrayMe
       this.lblWebTitle.Location = new System.Drawing.Point(192, 118);
       this.lblWebTitle.Name = "lblWebTitle";
       this.lblWebTitle.Size = new System.Drawing.Size(86, 13);
-      this.lblWebTitle.TabIndex = 7;
+      this.lblWebTitle.TabIndex = 2;
       this.lblWebTitle.Text = "uber-ware labs";
       // 
       // lblAuthor
@@ -159,7 +159,7 @@ namespace TrayMe
       this.lblAuthor.Location = new System.Drawing.Point(12, 80);
       this.lblAuthor.Name = "lblAuthor";
       this.lblAuthor.Size = new System.Drawing.Size(264, 15);
-      this.lblAuthor.TabIndex = 4;
+      this.lblAuthor.TabIndex = 1;
       this.lblAuthor.Text = "Designed and Coded by Joe Esposito";
       this.lblAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
@@ -173,7 +173,7 @@ namespace TrayMe
       this.picDescription.Location = new System.Drawing.Point(8, 8);
       this.picDescription.Name = "picDescription";
       this.picDescription.Size = new System.Drawing.Size(268, 64);
-      this.picDescription.TabIndex = 9;
+      this.picDescription.TabIndex = 0;
       // 
       // lblDescription
       // 
@@ -182,7 +182,7 @@ namespace TrayMe
       this.lblDescription.Location = new System.Drawing.Point(4, 8);
       this.lblDescription.Name = "lblDescription";
       this.lblDescription.Size = new System.Drawing.Size(256, 48);
-      this.lblDescription.TabIndex = 6;
+      this.lblDescription.TabIndex = 0;
       this.lblDescription.Text = "[ Description ]";
       this.lblDescription.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
@@ -192,7 +192,7 @@ namespace TrayMe
       this.lblTitle.Location = new System.Drawing.Point(48, 20);
       this.lblTitle.Name = "lblTitle";
       this.lblTitle.Size = new System.Drawing.Size(248, 16);
-      this.lblTitle.TabIndex = 8;
+      this.lblTitle.TabIndex = 0;
       this.lblTitle.Text = "[ Title ]";
       this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
@@ -202,7 +202,7 @@ namespace TrayMe
       this.btnClose.Location = new System.Drawing.Point(208, 220);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(84, 32);
-      this.btnClose.TabIndex = 7;
+      this.btnClose.TabIndex = 1;
       this.btnClose.Text = "&Close";
       // 
       // lblRevision
@@ -212,7 +212,7 @@ namespace TrayMe
       this.lblRevision.Location = new System.Drawing.Point(68, 220);
       this.lblRevision.Name = "lblRevision";
       this.lblRevision.Size = new System.Drawing.Size(51, 13);
-      this.lblRevision.TabIndex = 11;
+      this.lblRevision.TabIndex = 4;
       this.lblRevision.Text = "Revision:";
       // 
       // frmAbout
@@ -281,6 +281,8 @@ namespace TrayMe
         // Call the Process.Start method to open the default browser with a URL:
         System.Diagnostics.Process.Start("http://www.uber-ware.com");
       }
+      catch (Win32Exception)
+      {}
       catch
       {
         // Failsafe

@@ -31,6 +31,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/export:&quot;IsSubclassed&quot;=IsSubclassed /export:&quot;InjectDll&quot;=InjectDll /export:&quot;UnmapDll&quot;=UnmapDll"
 				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMe.dll"
 				Version="1.1"
 				LinkIncremental="2"
@@ -78,7 +79,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/export:&quot;IsSubclassed&quot;=IsSubclassed /export:&quot;InjectDll&quot;=InjectDll /export:&quot;UnmapDll&quot;=UnmapDll "
+				AdditionalOptions="/export:&quot;IsSubclassed&quot;=IsSubclassed /export:&quot;InjectDll&quot;=InjectDll /export:&quot;UnmapDll&quot;=UnmapDll"
 				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMe.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
