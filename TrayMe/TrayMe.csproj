@@ -116,6 +116,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "ShellShortcut.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "TrayMe.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

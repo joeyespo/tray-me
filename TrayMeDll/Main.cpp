@@ -552,11 +552,11 @@ bool DoTrayContextMenu (HWND hWnd)
       miiw.fMask = (MIIM_ID | MIIM_STATE | MIIM_STRING);
       miiw.fState = (MFS_ENABLED | MFS_DEFAULT);
     }
-    miiw.dwTypeData = L"Show"; miiw.cch = 4;
+    miiw.dwTypeData = L"&Show"; miiw.cch = 4;
     InsertMenuItemW(hMenu, 0, TRUE, &miiw);
     
     AppendMenuW(hMenu, (MF_SEPARATOR), 0, NULL);
-    AppendMenuW(hMenu, (MF_STRING | MF_ENABLED), 2, L"Untray Me");
+    AppendMenuW(hMenu, (MF_STRING | MF_ENABLED), 2, L"Un&tray Me");
   }
   else {
     MENUITEMINFOA miia; ZeroMemory(&miia, sizeof(miia));
@@ -570,11 +570,11 @@ bool DoTrayContextMenu (HWND hWnd)
       miia.fMask = (MIIM_ID | MIIM_STATE | MIIM_STRING);
       miia.fState = (MFS_ENABLED | MFS_DEFAULT);
     }
-    miia.dwTypeData = "Show"; miia.cch = 4;
+    miia.dwTypeData = "&Show"; miia.cch = 4;
     InsertMenuItemA(hMenu, 0, TRUE, &miia);
     
     AppendMenuA(hMenu, (MF_SEPARATOR), 0, NULL);
-    AppendMenuA(hMenu, (MF_STRING | MF_ENABLED), 2, "Untray Me");
+    AppendMenuA(hMenu, (MF_STRING | MF_ENABLED), 2, "Un&tray Me");
   }
   
   // !!!!! Use menu trick to get rid of 'feature'

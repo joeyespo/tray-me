@@ -16,13 +16,13 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 using System.IO;
+using System.ShellShortcut;
 using System.Reflection;
 
 
 
 namespace TrayMe
 {
-  /// <summary> Main TrayMe Form Class. </summary>
   public class frmMain : System.Windows.Forms.Form
   {
     
@@ -335,7 +335,7 @@ namespace TrayMe
       // Attach to app
       if (args.Length > 0)
       {
-        bool bExit   = false;
+        bool bNoExit = false;
         bool bNoHide = false;
         bool bQuiet  = false;
         
@@ -344,60 +344,93 @@ namespace TrayMe
         for (i = 0; i < args.Length; i++)
         {
           if (args[i].Length == 0) continue;
-          if (args[i][0] != '-') break;
           
-          // Get individual options
-          switch (args[i].ToLower())
+          if (args[i][0] == '-')
           {
-            case "-h":
-              MessageBox.Show(form, "Usage: " + 
-                Path.GetFileName(Application.ExecutablePath) + " [options] target cmd\n\n" +
-                "Options:\n" +
-                " -h  --  displays this help message\n" +
-                " -s  --  show window; do not close to tray\n" +
-                " -q  --  quiet mode; display no command line errors\n" +
-                " -x  --  exit when trayed\n" +
-                "\n" +
-                "target  --  the target application to tray\n" +
-                "cmd     --  the command line to be passed to the target\n",
-                "TrayMe Command Line Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
-              break;
-            case "-q": bQuiet  = true; break;
-            case "-s": bNoHide = true; break;
-            case "-x": bExit   = true; break;
-          }
-        }
-        
-        if (i < args.Length)
-        {
-          // Start app process and wait for idle input
-          ProcessStartInfo psi = new ProcessStartInfo(args[i], (( (i + 1) < args.Length )?( string.Join(" ", args, (i + 1), (args.Length - 1)) ):( "" )) );
-          if (!bNoHide) psi.WindowStyle = ProcessWindowStyle.Minimized;
-          Process app = Process.Start(psi);
-          app.WaitForInputIdle();
-          app.Refresh();
-          
-          // Attach to app's main window
-          if (app.HasExited)
-          { if (!bQuiet) MessageBox.Show(form, "Application exited before it could be trayed.", "TrayMe"); }
-          else
-          {
-            IntPtr hWnd = app.MainWindowHandle;
-            
-            if (hWnd == IntPtr.Zero)
-            { if (!bQuiet) MessageBox.Show(form, "Could not find application's main window.", "TrayMe"); }
-            else
+            // Get individual options
+            switch (args[i].ToLower())
             {
-              form.DoAttach(hWnd);
-              if (!bNoHide) Win32.SendMessage(hWnd, Win32.WM_CLOSE, 0, 0);
+              case "-h":
+                MessageBox.Show(form, "Usage: " + 
+                  Path.GetFileName(Application.ExecutablePath) + " [options] target cmd\n\n" +
+                  "Options:\n" +
+                  " -h  --  displays this help message\n" +
+                  " -s  --  show window; do not close to tray\n" +
+                  " -q  --  quiet mode; display no command line errors\n" +
+                  " -x  --  do not exit when trayed by command line\n" +
+                  "\n" +
+                  "target  --  the target application to tray\n" +
+                  "cmd     --  the command line to be passed to the target\n",
+                  "TrayMe Command Line Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                break;
+              case "-q": bQuiet  = true; break;
+              case "-s": bNoHide = true; break;
+              case "-x": bNoExit = true; break;
             }
           }
-          
-          // Exit if done
-          if (bExit)
+          else
           {
-            form.Close();
-            return;
+            string s = args[i];
+            while (Path.GetExtension(s).ToLower() == ".lnk")
+              s = (new System.ShellShortcut.ShellShortcut(s)).Path;
+            if (s == "") continue;
+            
+            if (Path.GetFullPath(s).ToLower() == Path.GetFullPath(Application.ExecutablePath).ToLower())
+            { if (!bQuiet) MessageBox.Show(form, "Cannot tray self.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            else
+            {
+              // Start app process
+              ProcessStartInfo psi = new ProcessStartInfo(s, (( (i + 1) < args.Length )?( string.Join(" ", args, (i + 1), (args.Length - 1)) ):( "" )).Trim() );
+              if (!bNoHide) psi.WindowStyle = ProcessWindowStyle.Minimized;
+              psi.UseShellExecute = true;
+              psi.CreateNoWindow = false;
+              Process app = null;
+              
+              try { app = Process.Start(psi); }
+              catch (Win32Exception e) {}
+            
+              if (app == null)
+              { if (!bQuiet) MessageBox.Show(form, "Application could not be started.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+              else
+              {
+                // Wait for idle input .. wait for application to be done loading
+                app.WaitForInputIdle();
+                app.Refresh();
+              
+                // Attach to app's main window
+                if (app.HasExited)
+                { if (!bQuiet) MessageBox.Show(form, "Application exited before it could be trayed.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+                else
+                {
+                  IntPtr hWnd = app.MainWindowHandle;
+                
+                  if (hWnd == IntPtr.Zero)
+                  { if (!bQuiet) MessageBox.Show(form, "Could not find application's main window.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+                  else
+                  {
+                    form.DoAttach(hWnd);
+                    if (!bNoHide)
+                    {
+                      Win32.WINDOWPLACEMENT wp = new Win32.WINDOWPLACEMENT();
+                      Win32.GetWindowPlacement(hWnd, ref wp);
+                    
+                      // Hide (close) window only if still minimized
+                      if ((wp.showCmd == Win32.SW_MINIMIZE) || (wp.showCmd == Win32.SW_SHOWMINIMIZED))
+                        Win32.SendMessage(hWnd, Win32.WM_CLOSE, 0, 0);
+                    }
+                  }
+                }
+              }
+            }
+            
+            // Exit if done
+            if (!bNoExit)
+            {
+              form.Close();
+              return;
+            }
+            
+            break;
           }
         }
       }
@@ -706,9 +739,9 @@ namespace TrayMe
       try
       {
         if (objTrayMe.IsHooked())
-        { if (!m_bSubclassed) { btnAttach.Text = "Un-Tray Me"; m_bSubclassed = true; } }
+        { if (!m_bSubclassed) { btnAttach.Text = "Un-&Tray Me"; m_bSubclassed = true; } }
         else  
-        { if (m_bSubclassed) { btnAttach.Text = "Tray Me!"; m_bSubclassed = false; } }
+        { if (m_bSubclassed) { btnAttach.Text = "&Tray Me!"; m_bSubclassed = false; } }
         
         if (!btnAttach.Enabled)
           btnAttach.Enabled = true;
