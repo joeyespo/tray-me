@@ -14,18 +14,18 @@ namespace TrayMe
 	public class TrayMeClass
 	{
     
-    #region Variables and Constants
+    #region Dll Declarations
     
     // Variables and Constants
     // ------------------------
     
-    [DllImport("HookInjEx.dll", EntryPoint="IsSubclassed", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
+    [DllImport("TrayMeDll.dll", EntryPoint="IsSubclassed", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
     private static extern int IsSubclassed ();
     
-    [DllImport("HookInjEx.dll", EntryPoint="InjectDll", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
+    [DllImport("TrayMeDll.dll", EntryPoint="InjectDll", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
     private static extern int InjectDll ( IntPtr hWnd );
     
-    [DllImport("HookInjEx.dll", EntryPoint="UnmapDll", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
+    [DllImport("TrayMeDll.dll", EntryPoint="UnmapDll", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
     private static extern int UnmapDll ();
     
     #endregion
@@ -42,7 +42,7 @@ namespace TrayMe
     { return (IsSubclassed() != 0); }
     
     // Hooks (subclasses) the window
-    public bool HookTrayWindow (IntPtr hWnd, IntPtr hIcon, string strToolTip)
+    public bool HookTrayWindow (IntPtr hWnd, IntPtr hIcon)
     {
       if (IsSubclassed() == 0)
       { InjectDll(hWnd); }

@@ -40,20 +40,19 @@ namespace TrayMe
     private Timer tmrCheck;
     private ImageList imlPics;
     private NotifyIcon nfiNotifyIcon;
+    private Button btnAbout;
+    private Button btnHide;
     private Button btnClose;
-    private GroupBox gpbTrayMe;
+    private Label lblFinderTool;
     private PictureBox picTarget;
-    private Button btnAttach;
+    private GroupBox gpbTrayMe;
     private Label lblHandle;
     private TextBox txtHandle;
-    private TextBox txtToolTip;
-    private Label lblToolTip;
     private Label lblCaption;
     private TextBox txtCaption;
     private Label lblUni;
     private TextBox txtUni;
-    private Label label1;
-    private Button btnHide;
+    private Button btnAttach;
     
     // Tray menu
     private ContextMenu mnuTray;
@@ -61,11 +60,12 @@ namespace TrayMe
     private MenuItem mnuTrayExit;
     
     #endregion
+
     
     
     
     #region Internal Information
-
+    
     #region Internal Private Members
     private System.ComponentModel.IContainer components;
     #endregion
@@ -93,7 +93,7 @@ namespace TrayMe
     }
     
     #endregion
-
+    
     #region Windows Form Designer generated code
     /// <summary>
     /// Required method for Designer support - do not modify
@@ -116,13 +116,12 @@ namespace TrayMe
       this.btnAttach = new System.Windows.Forms.Button();
       this.lblHandle = new System.Windows.Forms.Label();
       this.txtHandle = new System.Windows.Forms.TextBox();
-      this.txtToolTip = new System.Windows.Forms.TextBox();
-      this.lblToolTip = new System.Windows.Forms.Label();
       this.lblCaption = new System.Windows.Forms.Label();
       this.txtCaption = new System.Windows.Forms.TextBox();
       this.lblUni = new System.Windows.Forms.Label();
       this.txtUni = new System.Windows.Forms.TextBox();
-      this.label1 = new System.Windows.Forms.Label();
+      this.lblFinderTool = new System.Windows.Forms.Label();
+      this.btnAbout = new System.Windows.Forms.Button();
       this.gpbTrayMe.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -167,7 +166,7 @@ namespace TrayMe
       // 
       // btnClose
       // 
-      this.btnClose.Location = new System.Drawing.Point(276, 48);
+      this.btnClose.Location = new System.Drawing.Point(276, 92);
       this.btnClose.Name = "btnClose";
       this.btnClose.Size = new System.Drawing.Size(100, 29);
       this.btnClose.TabIndex = 2;
@@ -176,7 +175,7 @@ namespace TrayMe
       // 
       // btnHide
       // 
-      this.btnHide.Location = new System.Drawing.Point(276, 12);
+      this.btnHide.Location = new System.Drawing.Point(276, 56);
       this.btnHide.Name = "btnHide";
       this.btnHide.Size = new System.Drawing.Size(100, 29);
       this.btnHide.TabIndex = 2;
@@ -190,17 +189,15 @@ namespace TrayMe
                                                                             this.btnAttach,
                                                                             this.lblHandle,
                                                                             this.txtHandle,
-                                                                            this.txtToolTip,
-                                                                            this.lblToolTip,
                                                                             this.lblCaption,
                                                                             this.txtCaption,
                                                                             this.lblUni,
                                                                             this.txtUni,
-                                                                            this.label1});
+                                                                            this.lblFinderTool});
       this.gpbTrayMe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.gpbTrayMe.Location = new System.Drawing.Point(8, 8);
       this.gpbTrayMe.Name = "gpbTrayMe";
-      this.gpbTrayMe.Size = new System.Drawing.Size(260, 264);
+      this.gpbTrayMe.Size = new System.Drawing.Size(260, 192);
       this.gpbTrayMe.TabIndex = 4;
       this.gpbTrayMe.TabStop = false;
       // 
@@ -218,7 +215,7 @@ namespace TrayMe
       // 
       // btnAttach
       // 
-      this.btnAttach.Location = new System.Drawing.Point(144, 220);
+      this.btnAttach.Location = new System.Drawing.Point(144, 148);
       this.btnAttach.Name = "btnAttach";
       this.btnAttach.Size = new System.Drawing.Size(100, 28);
       this.btnAttach.TabIndex = 12;
@@ -242,22 +239,6 @@ namespace TrayMe
       this.txtHandle.TabIndex = 10;
       this.txtHandle.Text = "";
       this.txtHandle.TextChanged += new System.EventHandler(this.txtHandle_TextChanged);
-      // 
-      // txtToolTip
-      // 
-      this.txtToolTip.Location = new System.Drawing.Point(16, 192);
-      this.txtToolTip.Name = "txtToolTip";
-      this.txtToolTip.Size = new System.Drawing.Size(228, 20);
-      this.txtToolTip.TabIndex = 11;
-      this.txtToolTip.Text = "My ToolTip";
-      // 
-      // lblToolTip
-      // 
-      this.lblToolTip.Location = new System.Drawing.Point(16, 176);
-      this.lblToolTip.Name = "lblToolTip";
-      this.lblToolTip.Size = new System.Drawing.Size(228, 16);
-      this.lblToolTip.TabIndex = 5;
-      this.lblToolTip.Text = "ToolTi&p:";
       // 
       // lblCaption
       // 
@@ -293,22 +274,32 @@ namespace TrayMe
       this.txtUni.TabIndex = 8;
       this.txtUni.Text = "";
       // 
-      // label1
+      // lblFinderTool
       // 
-      this.label1.Location = new System.Drawing.Point(16, 36);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(84, 16);
-      this.label1.TabIndex = 6;
-      this.label1.Text = "&Finder Tool:";
+      this.lblFinderTool.Location = new System.Drawing.Point(16, 36);
+      this.lblFinderTool.Name = "lblFinderTool";
+      this.lblFinderTool.Size = new System.Drawing.Size(84, 16);
+      this.lblFinderTool.TabIndex = 6;
+      this.lblFinderTool.Text = "&Finder Tool:";
+      // 
+      // btnAbout
+      // 
+      this.btnAbout.Location = new System.Drawing.Point(276, 12);
+      this.btnAbout.Name = "btnAbout";
+      this.btnAbout.Size = new System.Drawing.Size(100, 29);
+      this.btnAbout.TabIndex = 2;
+      this.btnAbout.Text = "&About...";
+      this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
       // 
       // frmMain
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-      this.ClientSize = new System.Drawing.Size(386, 284);
+      this.ClientSize = new System.Drawing.Size(386, 212);
       this.Controls.AddRange(new System.Windows.Forms.Control[] {
                                                                   this.gpbTrayMe,
                                                                   this.btnClose,
-                                                                  this.btnHide});
+                                                                  this.btnHide,
+                                                                  this.btnAbout});
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MaximizeBox = false;
@@ -322,7 +313,7 @@ namespace TrayMe
 
     }
     #endregion
-
+    
     #endregion
     
     
@@ -373,6 +364,9 @@ namespace TrayMe
       
       // Set default values
       picTarget.Image = imlPics.Images[0];
+      
+      // Check tray
+      CheckTrayStatus();
     }
     
     private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -398,6 +392,13 @@ namespace TrayMe
     // Form Member Events
     // -------------------
     
+    private void btnAbout_Click(object sender, System.EventArgs e)
+    {
+      frmAbout about = new frmAbout();
+      about.ShowDialog(this);
+      about.Dispose();
+    }
+    
     private void btnAttach_Click(object sender, System.EventArgs e)
     {
       IntPtr hWnd;
@@ -405,7 +406,7 @@ namespace TrayMe
       
       if (objTrayMe.IsHooked())
       {
-        if (objTrayMe.HookTrayWindow(IntPtr.Zero, IntPtr.Zero, "") == true)
+        if (objTrayMe.HookTrayWindow(IntPtr.Zero, IntPtr.Zero) == true)
         { MessageBox.Show(this, "Could not unhook tray window."); }
         
         CheckTrayStatus();
@@ -422,7 +423,7 @@ namespace TrayMe
       { MessageBox.Show(this, "Enter a valid handle.", "TrayMe - Handle Error"); return; }
       
       // Tray the window
-      if (objTrayMe.HookTrayWindow(hWnd, this.Icon.Handle, txtToolTip.Text) == false)
+      if (objTrayMe.HookTrayWindow(hWnd, this.Icon.Handle) == false)
       { MessageBox.Show(this, "Could not hook tray window."); }
       
       CheckTrayStatus();
@@ -624,6 +625,7 @@ namespace TrayMe
     private void ShowTrayStatus ()
     {
       this.Show();
+      this.Focus();
     }
     
     private void CloseWindow ()
