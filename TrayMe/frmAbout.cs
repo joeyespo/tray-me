@@ -286,7 +286,7 @@ namespace TrayMe
       catch
       {
         // Failsafe
-        MessageBox.Show(this, "Could not start browser process.", "Czt", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(this, "Could not start browser process.", AppTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
     

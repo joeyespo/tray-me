@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 using System.IO;
 using System.Reflection;
@@ -25,19 +26,15 @@ namespace TrayMe
   public class frmMain : System.Windows.Forms.Form
   {
     
-    #region Form Variables
+    #region Class Variables
     
-    // Form Variables
-    // ---------------
-    
-    // Resources
     private Cursor m_curTarget = null;
     private bool bTargeting = false;
     private IntPtr hCurrentTarget = IntPtr.Zero;
     private bool m_bSubclassed = false;
-    private bool m_bExiting = false;
     
-    // Controls
+    #region Controls
+    
     private Timer tmrCheck;
     private ImageList imlPics;
     private NotifyIcon nfiNotifyIcon;
@@ -54,24 +51,17 @@ namespace TrayMe
     private Label lblUni;
     private TextBox txtUni;
     private Button btnAttach;
+    private CheckBox chkTopmost;
     
-    // Tray menu
     private ContextMenu mnuTray;
     private MenuItem mnuTrayStatus;
     private MenuItem mnuTrayExit;
     
-    #endregion
-    private System.Windows.Forms.CheckBox chkTopmost;
-    
-    
-    
-    
-    #region Internal Information
-    
-    #region Internal Private Members
     private System.ComponentModel.IContainer components;
+    
     #endregion
     
+    #endregion
     
     #region Class Construction
     
@@ -94,9 +84,8 @@ namespace TrayMe
       base.Dispose( disposing );
     }
     
-    #endregion
-    
     #region Windows Form Designer generated code
+    
     /// <summary>
     /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.
@@ -145,7 +134,6 @@ namespace TrayMe
       this.nfiNotifyIcon.ContextMenu = this.mnuTray;
       this.nfiNotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("nfiNotifyIcon.Icon")));
       this.nfiNotifyIcon.Text = "TrayMe";
-      this.nfiNotifyIcon.Visible = true;
       this.nfiNotifyIcon.DoubleClick += new System.EventHandler(this.nfiNotifyIcon_DoubleClick);
       // 
       // mnuTray
@@ -322,37 +310,104 @@ namespace TrayMe
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "TrayMe - Inactive";
       this.TopMost = true;
-      this.Closing += new System.ComponentModel.CancelEventHandler(this.frmMain_Closing);
       this.Load += new System.EventHandler(this.frmMain_Load);
+      this.Activated += new System.EventHandler(this.frmMain_Activated);
       this.gpbTrayMe.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
-    #endregion
     
     #endregion
     
+    #endregion
     
     
     #region Entry Point of Application
     
     /// <summary> The main entry point for the application. </summary>
     [STAThread]
-    static void Main() 
+    static void Main (string [] args)
     {
-      Application.Run(new frmMain());
+      frmMain form = new frmMain();
+      
+      // !!!!! Load settings
+      
+      // Attach to app
+      if (args.Length > 0)
+      {
+        bool bExit   = false;
+        bool bNoHide = false;
+        bool bQuiet  = false;
+        
+        // Get cmdline options
+        int i = 0;
+        for (i = 0; i < args.Length; i++)
+        {
+          if (args[i].Length == 0) continue;
+          if (args[i][0] != '-') break;
+          
+          // Get individual options
+          switch (args[i].ToLower())
+          {
+            case "-h":
+              MessageBox.Show(form, "Usage: " + 
+                Path.GetFileName(Application.ExecutablePath) + " [options] target cmd\n\n" +
+                "Options:\n" +
+                " -h  --  displays this help message\n" +
+                " -s  --  show window; do not close to tray\n" +
+                " -q  --  quiet mode; display no command line errors\n" +
+                " -x  --  exit when trayed\n" +
+                "\n" +
+                "target  --  the target application to tray\n" +
+                "cmd     --  the command line to be passed to the target\n",
+                "TrayMe Command Line Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+              break;
+            case "-q": bQuiet  = true; break;
+            case "-s": bNoHide = true; break;
+            case "-x": bExit   = true; break;
+          }
+        }
+        
+        if (i < args.Length)
+        {
+          // Start app process and wait for idle input
+          ProcessStartInfo psi = new ProcessStartInfo(args[i], (( (i + 1) < args.Length )?( string.Join(" ", args, (i + 1), (args.Length - 1)) ):( "" )) );
+          if (!bNoHide) psi.WindowStyle = ProcessWindowStyle.Minimized;
+          Process app = Process.Start(psi);
+          app.WaitForInputIdle();
+          app.Refresh();
+          
+          // Attach to app's main window
+          if (app.HasExited)
+          { if (!bQuiet) MessageBox.Show(form, "Application exited before it could be trayed.", "TrayMe"); }
+          else
+          {
+            IntPtr hWnd = app.MainWindowHandle;
+            
+            if (hWnd == IntPtr.Zero)
+            { if (!bQuiet) MessageBox.Show(form, "Could not find application's main window.", "TrayMe"); }
+            else
+            {
+              form.DoAttach(hWnd);
+              if (!bNoHide) Win32.SendMessage(hWnd, Win32.WM_CLOSE, 0, 0);
+            }
+          }
+          
+          // Exit if done
+          if (bExit)
+          {
+            form.Close();
+            return;
+          }
+        }
+      }
+      
+      Application.Run(form);
     }
     
     #endregion
     
     
-    
-    #region Form Events
-    
-    #region Form Creation Events
-    
-    // Form Creation Events
-    // ---------------------
     
     private void frmMain_Load(object sender, System.EventArgs e)
     {
@@ -368,7 +423,7 @@ namespace TrayMe
       catch (Exception x )
       {
         // Show error
-        MessageBox.Show("Failed to load cursors.\n\n" + x.ToString());
+        MessageBox.Show(this, "Failed to load cursors.\n\n" + x.ToString(), "TrayMe");
         
         // Attempt to use backup cursor
         if (m_curTarget == null) m_curTarget = Cursors.Cross;
@@ -382,28 +437,10 @@ namespace TrayMe
       CheckTrayStatus();
     }
     
-    private void frmMain_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-    {
-      TrayMeClass objTrayMe = new TrayMeClass();
-      
-      if (!m_bExiting) { e.Cancel = true; this.Hide(); return; }
-      
-      /* TOADD: Use in WinEye
-      if (objTrayMe.IsHooked())
-      {
-        if (objTrayMe.HookTrayWindow(IntPtr.Zero, IntPtr.Zero, "") == true)
-        { MessageBox.Show(this, "Could not unhook tray window."); e.Cancel = true; }
-        else
-        { btnAttach.Text = "Tray Me!"; return; }
-      }*/
-    }
+    private void frmMain_Activated(object sender, System.EventArgs e)
+    { if (!nfiNotifyIcon.Visible) nfiNotifyIcon.Visible = true; }
     
-    #endregion
     
-    #region Form Control Events
-    
-    // Form Member Events
-    // -------------------
     
     private void btnAbout_Click(object sender, System.EventArgs e)
     {
@@ -414,38 +451,12 @@ namespace TrayMe
     
     private void btnAttach_Click(object sender, System.EventArgs e)
     {
-      IntPtr hWnd;
-      
-      // Failsafe
-      if (!CheckTrayStatus()) return;
-      
-      // Check for trayed window
-      TrayMeClass objTrayMe = new TrayMeClass();
-      if (objTrayMe.IsHooked())
-      {
-        if (objTrayMe.HookTrayWindow(IntPtr.Zero, IntPtr.Zero) == true)
-        { MessageBox.Show(this, "Could not unhook tray window."); }
-        
-        CheckTrayStatus();
-        return;
-      }
-      
-      
-      try
-      { hWnd = (IntPtr)Convert.ToInt32(txtHandle.Text, 16); }
-      catch
-      { hWnd = IntPtr.Zero; }
-      
-      if (Win32.IsWindow(hWnd) == 0)
-      { MessageBox.Show(this, "Enter a valid handle.", "TrayMe - Handle Error"); return; }
-      
-      // Tray the window
-      if (objTrayMe.HookTrayWindow(hWnd, this.Icon.Handle) == false)
-      { MessageBox.Show(this, "Could not hook tray window."); }
-      
-      CheckTrayStatus();
+      if (IsAttached())
+        DoDetach();
+      else
+        DoAttach();
     }
-
+    
     private void chkTopmost_CheckedChanged(object sender, System.EventArgs e)
     { TopMost = chkTopmost.Checked; }
     
@@ -461,7 +472,7 @@ namespace TrayMe
     }
     
     private void btnClose_Click(object sender, System.EventArgs e)
-    { CloseWindow(); }
+    { this.Close(); }
 
     private void btnHide_Click(object sender, System.EventArgs e)
     {
@@ -470,8 +481,6 @@ namespace TrayMe
     
     private void tmrCheck_Tick(object sender, System.EventArgs e)
     { CheckTrayStatus(); }
-    
-    #endregion
     
     #region Form Target Events
     
@@ -578,28 +587,77 @@ namespace TrayMe
     
     #region Form Tray Menu Events
     
-    // Form Tray Menu Events
-    // ----------------------
-    
     private void mnuTrayExit_Click(object sender, System.EventArgs e)
-    { CloseWindow(); }
+    { this.Close(); }
 
     private void mnuTrayStatus_Click(object sender, System.EventArgs e)
     { ShowTrayStatus(); }
-
     private void nfiNotifyIcon_DoubleClick(object sender, System.EventArgs e)
+    { ShowTrayStatus(); }
+    
+    #endregion
+    
+    
+    
+    private bool IsAttached ()
+    { return (new TrayMeClass()).IsHooked(); }
+    
+    private bool DoDetach ()
     {
-      ShowTrayStatus();
+      // Check for trayed window
+      TrayMeClass objTrayMe = new TrayMeClass();
+      if (objTrayMe.IsHooked())
+      {
+        if (objTrayMe.HookTrayWindow(IntPtr.Zero, IntPtr.Zero) == true)
+        {
+          MessageBox.Show(this, "Could not unhook tray window.", "TrayMe");
+          return false;
+        }
+        
+        CheckTrayStatus();
+      }
+      
+      return true;
     }
     
-    #endregion
+    private bool DoAttach ()
+    {
+      IntPtr hWnd;
+      
+      // Failsafe
+      if (!CheckTrayStatus()) return false;
+      
+      // Validate input
+      try { hWnd = (IntPtr)Convert.ToInt32(txtHandle.Text, 16); }
+      catch { hWnd = IntPtr.Zero; }
+      if (Win32.IsWindow(hWnd) == 0)
+      {
+        MessageBox.Show(this, "Enter a valid handle.", "TrayMe");
+        return false;
+      }
+      
+      // Attach new window
+      return DoAttach(hWnd);
+    }
+    private bool DoAttach (IntPtr hWnd)
+    {
+      // Failsafe
+      if (!CheckTrayStatus()) return false;
+      if (hWnd == IntPtr.Zero) return false;
+      
+      // Detach old window
+      if (!DoDetach()) return false;
+      
+      // Tray the window
+      TrayMeClass objTrayMe = new TrayMeClass();
+      if (objTrayMe.HookTrayWindow(hWnd, this.Icon.Handle) == false)
+      { MessageBox.Show(this, "Could not hook tray window.", "TrayMe"); }
+      
+      // Update status
+      CheckTrayStatus();
+      return true;
+    }
     
-    #endregion
-    
-    #region Form Functions
-    
-    // Form Functions
-    // ---------------
     
     private void ShowWindowInfo (IntPtr hWnd, bool bHandle)
     {
@@ -656,8 +714,8 @@ namespace TrayMe
           btnAttach.Enabled = true;
         
         return true;
-      } 
-      catch (DllNotFoundException e)
+      }
+      catch (DllNotFoundException)
       {
         if (btnAttach.Enabled)
         {
@@ -665,7 +723,7 @@ namespace TrayMe
           btnAttach.Text = "Missing Dll";
         }
       }
-      catch (EntryPointNotFoundException e)
+      catch (EntryPointNotFoundException)
       {
         if (btnAttach.Enabled)
         {
@@ -682,14 +740,6 @@ namespace TrayMe
       this.Show();
       this.Focus();
     }
-    
-    private void CloseWindow ()
-    {
-      m_bExiting = true;
-      this.Close();
-    }
-    
-    #endregion
     
   }
 }
