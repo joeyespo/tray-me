@@ -7,7 +7,7 @@
     >
         <Build>
             <Settings
-                ApplicationIcon = ""
+                ApplicationIcon = "..\Graphics\App.ico"
                 AssemblyKeyContainerName = ""
                 AssemblyName = "TrayMe"
                 AssemblyOriginatorKeyFile = ""
@@ -88,6 +88,7 @@
             <Include>
                 <File
                     RelPath = "AssemblyInfo.cs"
+                    SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File

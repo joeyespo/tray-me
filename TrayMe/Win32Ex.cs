@@ -21,6 +21,9 @@ public class Win32Ex : Win32
     return strTemp;
   }
   
+  public static void DoEvents ()
+  { System.Windows.Forms.Application.DoEvents(); }
+  
   // Retrieves the window from the client point
   public static IntPtr WindowFromPoint(IntPtr hClientWnd, int xPoint, int yPoint)
   {

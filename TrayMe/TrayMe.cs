@@ -18,22 +18,15 @@ namespace TrayMe
     
     // Variables and Constants
     // ------------------------
-  
-    // Callback delegate function declarations
-    private delegate int HookProc ( int nCode, int wParam, int lParam );
     
-    [DllImport("user32", EntryPoint="SetWindowsHookEx", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
-    private static extern int SetWindowsHookEx ( int idHook, HookProc lpfn, IntPtr hmod, int dwThreadId );
+    [DllImport("HookInjEx.dll", EntryPoint="IsSubclassed", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
+    private static extern int IsSubclassed ();
     
-    // Public constants
-    public const int DEF_WM_SYSTRAYNOTIFY = (Win32.WM_USER+3);  // Default Tray Icon message
-    public const int DEF_ID_SYSTRAYNOTIFY = (1001);             // Default Tray Icon ID
+    [DllImport("HookInjEx.dll", EntryPoint="InjectDll", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
+    private static extern int InjectDll ( IntPtr hWnd );
     
-    // Internal variables
-    private IntPtr m_hHook;                 // The previous window procedure
-    internal IntPtr m_lpWndProc;            // The previous window procedure
-    internal int m_uCallbackMessage;        // The windows message used for the callback
-    internal int m_uSysTrayID;              // The Tray ID
+    [DllImport("HookInjEx.dll", EntryPoint="UnmapDll", SetLastError=false, CharSet=CharSet.Ansi, ExactSpelling=true, CallingConvention=CallingConvention.Winapi)]
+    private static extern int UnmapDll ();
     
     #endregion
     
@@ -44,27 +37,21 @@ namespace TrayMe
     // Public Functions
     // -----------------
     
+    // Returns whether or not it is currently subclassed
+    public bool IsHooked ()
+    { return (IsSubclassed() != 0); }
+    
     // Hooks (subclasses) the window
     public bool HookTrayWindow (IntPtr hWnd, IntPtr hIcon, string strToolTip)
     {
-      int dwThread;
-      int dwProcessId = new int();
-      HookProc hp = new HookProc(HookCBTProc);
+      if (IsSubclassed() == 0)
+      { InjectDll(hWnd); }
+      else
+      { UnmapDll(); }
       
-      // Local vars
-      Win32.NOTIFYICONDATA nidTrayIcon = new Win32.NOTIFYICONDATA();
+      return (IsSubclassed() != 0);
       
-      
-      // TODO: Subclass window
-      dwThread = Win32.GetWindowThreadProcessId(hWnd, ref dwProcessId);
-      
-      m_lpWndProc = IntPtr.Zero;
-      m_uCallbackMessage = DEF_WM_SYSTRAYNOTIFY;
-      m_uSysTrayID = DEF_ID_SYSTRAYNOTIFY;
-      m_hHook = (IntPtr)Win32.SetWindowsHookEx(Win32.WH_CALLWNDPROC, hp.Method.MethodHandle.Value, IntPtr.Zero, dwThread);
-      
-      Win32.UnhookWindowsHookEx(m_hHook);
-      
+      /*
       // Initialize tray icon
       nidTrayIcon.cbSize = Win32.NOTIFYICONDATA_V1_SIZE;
       nidTrayIcon.hWnd = hWnd;
@@ -81,6 +68,7 @@ namespace TrayMe
       
       // Success
       return true;
+      */
     }
     
     #endregion
@@ -92,6 +80,7 @@ namespace TrayMe
     // Private Window Procedure Function
     // ----------------------------------
     
+    /*
     private int HookCBTProc (int nCode, int wParam, int lParam)
     {
       if (nCode < 0) return Win32.CallNextHookEx(m_hHook, nCode, wParam, lParam);
@@ -103,6 +92,7 @@ namespace TrayMe
       // Call subclassed window procedure
       return Win32.CallWindowProc(m_lpWndProc, hWnd, uMsg, wParam, lParam);
     }
+    */
     
     #endregion
 
