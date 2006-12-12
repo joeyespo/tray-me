@@ -32,7 +32,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:&quot;IsSubclassed&quot;=IsSubclassed /export:&quot;InjectDll&quot;=InjectDll /export:&quot;UnmapDll&quot;=UnmapDll"
-				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMe.dll"
+				OutputFile="$(ProjectDir)\..\..\TrayMe.dll"
 				Version="1.1"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
@@ -57,7 +57,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Build\Release"
+			OutputDirectory="Build\Release\"
 			IntermediateDirectory="Build\"
 			ConfigurationType="2"
 			CharacterSet="0">
@@ -80,7 +80,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:&quot;IsSubclassed&quot;=IsSubclassed /export:&quot;InjectDll&quot;=InjectDll /export:&quot;UnmapDll&quot;=UnmapDll"
-				OutputFile="$(ProjectDir)/../TrayMe/$(OutDir)/TrayMe.dll"
+				OutputFile="$(ProjectDir)\..\..\TrayMe.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"

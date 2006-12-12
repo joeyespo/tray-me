@@ -283,7 +283,7 @@ namespace TrayMe
       this.lblFinderTool.Name = "lblFinderTool";
       this.lblFinderTool.Size = new System.Drawing.Size(84, 16);
       this.lblFinderTool.TabIndex = 0;
-      this.lblFinderTool.Text = "&Finder Tool:";
+      this.lblFinderTool.Text = "Finder Tool:";
       // 
       // btnAbout
       // 
@@ -387,7 +387,7 @@ namespace TrayMe
               Process app = null;
               
               try { app = Process.Start(psi); }
-              catch (Win32Exception e) {}
+              catch (Win32Exception) {}
             
               if (app == null)
               { if (!bQuiet) MessageBox.Show(form, "Application could not be started.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error); }
@@ -442,7 +442,7 @@ namespace TrayMe
     
     
     
-    private void frmMain_Load(object sender, System.EventArgs e)
+    private void frmMain_Load (object sender, System.EventArgs e)
     {
       // Create Resources
       // -----------------
@@ -470,19 +470,19 @@ namespace TrayMe
       CheckTrayStatus();
     }
     
-    private void frmMain_Activated(object sender, System.EventArgs e)
+    private void frmMain_Activated (object sender, System.EventArgs e)
     { if (!nfiNotifyIcon.Visible) nfiNotifyIcon.Visible = true; }
     
     
     
-    private void btnAbout_Click(object sender, System.EventArgs e)
+    private void btnAbout_Click (object sender, System.EventArgs e)
     {
       frmAbout about = new frmAbout();
       about.ShowDialog(this);
       about.Dispose();
     }
     
-    private void btnAttach_Click(object sender, System.EventArgs e)
+    private void btnAttach_Click (object sender, System.EventArgs e)
     {
       if (IsAttached())
         DoDetach();
@@ -490,7 +490,7 @@ namespace TrayMe
         DoAttach();
     }
     
-    private void chkTopmost_CheckedChanged(object sender, System.EventArgs e)
+    private void chkTopmost_CheckedChanged (object sender, System.EventArgs e)
     { TopMost = chkTopmost.Checked; }
     
     private void txtHandle_TextChanged(object sender, System.EventArgs e)
@@ -504,15 +504,15 @@ namespace TrayMe
       ShowWindowInfo(hWnd, false);
     }
     
-    private void btnClose_Click(object sender, System.EventArgs e)
+    private void btnClose_Click (object sender, System.EventArgs e)
     { this.Close(); }
 
-    private void btnHide_Click(object sender, System.EventArgs e)
+    private void btnHide_Click (object sender, System.EventArgs e)
     {
       this.Hide();
     }
     
-    private void tmrCheck_Tick(object sender, System.EventArgs e)
+    private void tmrCheck_Tick (object sender, System.EventArgs e)
     { CheckTrayStatus(); }
     
     #region Form Target Events

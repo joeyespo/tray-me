@@ -58,6 +58,9 @@ UINT WM_TRAYME_TRAYNOTIFY = NULL;
 HWND g_hWnd = NULL;
 HHOOK g_hHook = NULL;
 HMENU g_hMenu = NULL;
+int g_nHotKeyAtom = 0;
+int g_nHotKey = (MOD_CONTROL | MOD_SHIFT);        // !!!!! Make customizable
+char g_chHotKey = 'M';
 
 #pragma data_seg ()
 
@@ -212,6 +215,11 @@ LRESULT HookProc (int code, WPARAM wParam, LPARAM lParam)
         { FreeLibrary(g_hDll); goto END; }
       }
       
+      
+      // Register hotkey
+      g_nHotKeyAtom = GlobalAddAtom("TrayMe HotKey");
+      if (g_nHotKeyAtom != 0) RegisterHotKey(g_hWnd, g_nHotKeyAtom, g_nHotKey, g_chHotKey);
+      
       // Success
       MessageBeep(MB_OK);
       g_bSubclassed = true;
@@ -227,6 +235,14 @@ LRESULT HookProc (int code, WPARAM wParam, LPARAM lParam)
       
       // Unhook the hook
       UnhookWindowsHookEx(g_hHook);
+      
+      // Unregister hotkey
+      if (g_nHotKeyAtom != 0)
+      {
+        UnregisterHotKey(g_hWnd, g_nHotKeyAtom);
+        GlobalDeleteAtom(g_nHotKeyAtom);
+        g_nHotKeyAtom = 0;
+      }
       
       // Unmap Dll
       if (!g_bSubclassed) return NULL;
@@ -312,7 +328,6 @@ BOOL WINAPI InjectDll (HWND hWnd)
   // Check for subclassing
   while (!g_bSubclassed);
   g_bIsSubclassing = false;
-  
   return TRUE;
   
 
@@ -371,7 +386,7 @@ bool LocalUnmapDll (bool bIndirectUnmap)
   // Check for subclassing
   while (g_bSubclassed);
   g_bIsUnSubclassing = false;
-  
+  g_hWnd = NULL;
   return TRUE;
   
 
@@ -410,7 +425,6 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       switch(lParam)
       {
         case WM_RBUTTONUP:
-          
           DoTrayContextMenu(hWnd);
           break;
         
@@ -422,7 +436,20 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
     
     return 0;
-    
+  }
+  else if (uMsg == WM_HOTKEY)
+  {
+    if ((int)wParam == g_nHotKeyAtom)
+    {
+      if (IsWindow(hWnd))
+      {
+        if (IsWindowVisible(hWnd))
+          SendMessage(hWnd, WM_CLOSE, 0, 0);
+        else
+          ShowTrayedWindow(hWnd);
+        return 0;
+      }
+    }
   }
   else
   {
@@ -494,6 +521,14 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 0;
       
       case WM_DESTROY:
+        
+        // Unregister hotkey
+        if (g_nHotKeyAtom != 0)
+        {
+          UnregisterHotKey(g_hWnd, g_nHotKeyAtom);
+          GlobalDeleteAtom(g_nHotKeyAtom);
+          g_nHotKeyAtom = 0;
+        }
         
         // Unsubclass window
         if (IsWindowUnicode(hWnd))
@@ -623,6 +658,7 @@ bool ShowTrayedWindow (HWND hWnd)
 
   // Show window
   ShowWindow(hWnd, SW_SHOWNORMAL);
+  SetForegroundWindow(hWnd);
   g_bInTray = false;
   
   return true;

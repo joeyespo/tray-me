@@ -9402,7 +9402,7 @@ public class Win32
   public static extern int SetWindowTextW ( IntPtr hWnd, string lpString );
   
   [DllImport("user32", EntryPoint="GetWindowText", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
-  public static extern int GetWindowText ( IntPtr hWnd, string lpString, int cch );
+  public static extern int GetWindowText ( IntPtr hWnd, string sString, int cch );
   
   [DllImport("user32", EntryPoint="GetWindowTextA", SetLastError=true, CharSet=CharSet.Ansi, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
   public static extern int GetWindowTextA ( IntPtr hWnd, IntPtr lpString, int cch );
@@ -9671,7 +9671,13 @@ public class Win32
   
   
   [DllImport("user32", EntryPoint="GetClassName", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
-  public static extern int GetClassName ( IntPtr hWnd, string lpClassName, int nMaxCount );
+  public static extern int GetClassName ( IntPtr hWnd, string sClassName, int nMaxCount );
+  
+  [DllImport("user32", EntryPoint="GetClassNameA", SetLastError=true, CharSet=CharSet.Ansi, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int GetClassNameA ( IntPtr hWnd, IntPtr lpClassName, int nMaxCount );
+  
+  [DllImport("user32", EntryPoint="GetClassNameW", SetLastError=true, CharSet=CharSet.Unicode, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern int GetClassNameW ( IntPtr hWnd, IntPtr lpClassName, int nMaxCount );
   
   [DllImport("user32", EntryPoint="GetTopWindow", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
   public static extern int GetTopWindow ( IntPtr hWnd );

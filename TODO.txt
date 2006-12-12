@@ -1,16 +1,17 @@
 ToDo - TrayMe
 --------------
 
-
 * Command line traying program; wait for first window and tray it (ex: TrayMe.exe "Some Program.exe")
+- Untray last trayed window before new window is trayed (i.e. when from command line)
 - Show window if tray icon is missing, but is still hidden
 - Workaround the TrackContextMenu() "feature"
 - Nmumonics in the context menu
 - Multiple window traying
   - Window handle becomes a complex drop-down .. all items are trayed window handles
-- TrayMe Hotkeys ??
+- TrayMe Hotkeys
+  * Window-specific hotkeys
+  - Assign window-specific hotkeys to a particular hotkey
   - Win+T - Tray/Untray current window
-  - Window-specific hotkeys (assigned to a particular hotkey)
 
 - Cmdline option: -k  -->  hotkey
 * Cmdline option: -h  -->  command line help

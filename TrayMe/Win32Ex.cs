@@ -9,12 +9,11 @@ using System.Runtime.InteropServices;
 /// <summary> Win32 API. </summary>
 public class Win32Ex : Win32
 {
-  
   public static string GetWindowText (IntPtr hWnd)
   {
     int cch;
     IntPtr lpString;
-    String sResult;
+    string sResult;
     
     // !!!!! System.Text.Encoding
     if (IsWindow(hWnd) == 0) return "";
@@ -44,6 +43,54 @@ public class Win32Ex : Win32
       
       // Get window ANSI text
       Win32.GetWindowTextA(hWnd, lpString, cch);
+      
+      // Get managed string from ANSI string
+      sResult = Marshal.PtrToStringAnsi(lpString, cch);
+      
+      // Free allocated ANSI string
+      Marshal.FreeHGlobal(lpString);
+      lpString = IntPtr.Zero;
+      
+      // Return managed string
+      return sResult;
+    }
+  }
+  
+  public static string GetClassName (IntPtr hWnd)
+  {
+    const int windowClassNameLength = 255;
+    int cch;
+    IntPtr lpString;
+    string sResult;
+    
+    // !!!!! System.Text.Encoding
+    if (IsWindow(hWnd) == 0) return "";
+    
+    if (Win32.IsWindowUnicode(hWnd) != 0)
+    {
+      // Allocate new Unicode string
+      lpString = Marshal.AllocHGlobal((cch = (windowClassNameLength + 1)) * 2);
+      
+      // Get window class Unicode text
+      Win32.GetClassNameW(hWnd, lpString, cch);
+      
+      // Get managed string from Unicode string
+      sResult = Marshal.PtrToStringUni(lpString, cch);
+      
+      // Free allocated Unicode string
+      Marshal.FreeHGlobal(lpString);
+      lpString = IntPtr.Zero;
+      
+      // Return managed string
+      return sResult;
+    }
+    else 
+    {
+      // Allocate new ANSI string
+      lpString = Marshal.AllocHGlobal((cch = (Win32.GetWindowTextLengthA(hWnd) + 1)));
+      
+      // Get window class ANSI text
+      Win32.GetClassNameA(hWnd, lpString, cch);
       
       // Get managed string from ANSI string
       sResult = Marshal.PtrToStringAnsi(lpString, cch);
