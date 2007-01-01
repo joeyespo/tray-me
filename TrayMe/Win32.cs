@@ -6,31 +6,36 @@ using System.Runtime.InteropServices;
 
 
 /// <summary> Win32 API. </summary>
-public class Win32
+internal class Win32
 {
-  
-  // ------------------------------------------------------------------------
-  //
-  //    WIN32API.TXT -- Win32 API Declarations for Visual Basic
-  //
-  //              Copyright (C) 1994-98 Microsoft Corporation
-  //
-  //  This file is required for the Visual Basic 6.0 version of the APILoader.
-  //  Older versions of this file will not work correctly with the version
-  //  6.0 APILoader.  This file is backwards compatible with previous releases
-  //  of the APILoader with the exception that Constants are no longer declared
-  //  as Global or Public in this file.
-  //
-  //  This file contains only the Const, Type,
-  //  and Declare statements for  Win32 APIs.
-  //
-  //  You have a royalty-free right to use, modify, reproduce and distribute
-  //  this file (and/or any modified version) in any way you find useful,
-  //  provided that you agree that Microsoft has no warranty, obligation or
-  //  liability for its contents.  Refer to the Microsoft Windows Programmer's
-  //  Reference for further information.
-  //
-  // ------------------------------------------------------------------------
+  [Flags]
+  public enum AnimateStyles : int
+  {
+    Show =					      0x00000000,
+    Slide =					      0x00040000,
+    Activate =				    0x00020000,
+    Blend =					      0x00080000,
+    Hide =					      0x00010000, 
+    Center =				      0x00000010,
+    HorizontalPositive =	0x00000001,
+    HorizontalNegative =	0x00000002,
+    VerticalPositive =		0x00000004,
+    VerticalNegative =		0x00000008
+  }
+
+  public enum ShowWindowCommands : int
+  {
+    Hide = 0,
+    ShowNormal = 1,
+    ShowMinimized = 2,
+    ShowMaximized = 3,
+    ShowNoActivate = 4,
+    Show = 5,
+    Minimize = 6,
+    ShowMinNoActive = 7,
+    ShowNA = 8,
+    Restore = 9,
+  }
   
   // Callback delegate function declarations
   public delegate int WndProc ( System.IntPtr hWnd, int uMsg, int wParam, int lParam );
@@ -8679,8 +8684,11 @@ public class Win32
   public static extern int DestroyWindow ( IntPtr hWnd );
   
   
+  [DllImport("user32", EntryPoint="AnimateWindow", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
+  public static extern bool AnimateWindow ( IntPtr hWnd, uint time, AnimateStyles flags );
+  
   [DllImport("user32", EntryPoint="ShowWindow", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
-  public static extern int ShowWindow ( IntPtr hWnd, int nCmdShow );
+  public static extern int ShowWindow ( IntPtr hWnd, ShowWindowCommands nCmdShow );
   
   [DllImport("user32", EntryPoint="FlashWindow", SetLastError=true, CharSet=CharSet.Auto, ExactSpelling=false, CallingConvention=CallingConvention.Winapi)]
   public static extern int FlashWindow ( IntPtr hWnd, int bInvert );
