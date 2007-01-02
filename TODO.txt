@@ -2,6 +2,10 @@ ToDo - TrayMe
 --------------
 
 * Command line traying program; wait for first window and tray it (ex: TrayMe.exe "Some Program.exe")
+* Cmdline option: -h  -->  command line help
+* Cmdline option: -s  -->  show window; do not hide to tray
+* Cmdline option: -q  -->  quiet mode; display no command line errors
+* Cmdline option: -x  -->  exit when trayed
 - Untray last trayed window before new window is trayed (i.e. when from command line)
 - Show window if tray icon is missing, but is still hidden
 - Workaround the TrackContextMenu() "feature"
@@ -12,9 +16,7 @@ ToDo - TrayMe
   * Window-specific hotkeys
   - Assign window-specific hotkeys to a particular hotkey
   - Win+T - Tray/Untray current window
-
 - Cmdline option: -k  -->  hotkey
-* Cmdline option: -h  -->  command line help
-* Cmdline option: -s  -->  show window; do not hide to tray
-* Cmdline option: -q  -->  quiet mode; display no command line errors
-* Cmdline option: -x  -->  exit when trayed
+- Protect from multiple subclasses
+  (when unmapping, if current subclass proc ptr does not match window's subclass proc ptr, then DO NOT unmap, but instead
+  continue to use current subclass's proc ptr (WndPric) until it matches window's subclass proc ptr, then unmap as normal).

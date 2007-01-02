@@ -1,28 +1,44 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrayMe", "TrayMe\TrayMe.csproj", "{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8} = {46D5D737-6969-4E14-BB6F-F673035C4FC8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrayMeDll", "TrayMeDll\TrayMeDll.vcproj", "{46D5D737-6969-4E14-BB6F-F673035C4FC8}"
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|Win32 = Debug|Win32
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|Win32 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.0 = {46D5D737-6969-4E14-BB6F-F673035C4FC8}
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Release|Win32.ActiveCfg = Release|Any CPU
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Debug|Win32.Build.0 = Debug|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Release|Any CPU.ActiveCfg = Release|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Release|Win32.ActiveCfg = Release|Win32
+		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Debug.ActiveCfg = Debug|.NET
-		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Debug.Build.0 = Debug|.NET
-		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Release.ActiveCfg = Release|.NET
-		{F0EDBBE4-C8E4-402C-814D-6DFE57C266C5}.Release.Build.0 = Release|.NET
-		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Debug.ActiveCfg = Debug|Win32
-		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Debug.Build.0 = Debug|Win32
-		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Release.ActiveCfg = Release|Win32
-		{46D5D737-6969-4E14-BB6F-F673035C4FC8}.Release.Build.0 = Release|Win32
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
