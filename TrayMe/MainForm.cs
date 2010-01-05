@@ -35,14 +35,14 @@ namespace TrayMe
         {
             // Set capture image and cursor
             picTarget.Image = imageList.Images[1];
-            picTarget.Cursor = m_curTarget;
+            picTarget.Cursor = targetCursor;
 
             // Set capture
             Win32.SetCapture( picTarget.Handle );
 
             // Begin targeting
-            bTargeting = true;
-            hCurrentTarget = IntPtr.Zero;
+            isTargetingWindow = true;
+            targetedWindowHandle = IntPtr.Zero;
 
             // Show info   FIX: Put into function for mousemove & mousedown
             ShowWindowInfo( picTarget.Handle, true );
@@ -59,12 +59,12 @@ namespace TrayMe
             IntPtr hTemp;
 
             // End targeting
-            bTargeting = false;
+            isTargetingWindow = false;
 
             // Unhighlight window
-            if( hCurrentTarget != IntPtr.Zero )
-                Win32Ex.HighlightWindow( hCurrentTarget );
-            hCurrentTarget = IntPtr.Zero;
+            if( targetedWindowHandle != IntPtr.Zero )
+                Win32Ex.HighlightWindow( targetedWindowHandle );
+            targetedWindowHandle = IntPtr.Zero;
 
             // Reset capture image and cursor
             picTarget.Cursor = Cursors.Default;
@@ -101,7 +101,7 @@ namespace TrayMe
             Win32.ClientToScreen( picTarget.Handle, ref pt );
 
             // Make sure targeting before highlighting windows
-            if( !bTargeting )
+            if( !isTargetingWindow )
                 return;
 
             // Get screen coords from client coords and window handle
@@ -191,16 +191,16 @@ namespace TrayMe
             try
             {
                 using( MemoryStream ms = new MemoryStream( Properties.Resources.curTarget ) )
-                    m_curTarget = new Cursor( ms );
+                    targetCursor = new Cursor( ms );
             }
             catch( Exception x )
             {
                 // Show error
-                MessageBox.Show( this, "Failed to load cursors.\n\n" + x.ToString(), "TrayMe" );
+                MessageBox.Show( this, "Could not load the \"Target\" cursor." + Environment.NewLine + Environment.NewLine + x.ToString(), "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 
                 // Attempt to use backup cursor
-                if( m_curTarget == null )
-                    m_curTarget = Cursors.Cross;
+                if( targetCursor == null )
+                    targetCursor = Cursors.Cross;
             }
 
 
@@ -333,7 +333,7 @@ namespace TrayMe
             {
                 if( trayMe.HookTrayWindow( IntPtr.Zero, IntPtr.Zero ) == true )
                 {
-                    MessageBox.Show( this, "Could not unhook tray window.", "TrayMe" );
+                    MessageBox.Show( this, "Could not unhook currently trayed window.", "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
                     return false;
                 }
 
@@ -366,7 +366,7 @@ namespace TrayMe
             }
             if( Win32.IsWindow( hWnd ) == 0 )
             {
-                MessageBox.Show( this, "Enter a valid handle.", "TrayMe" );
+                MessageBox.Show( this, "Please enter a valid handle.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Information );
                 return false;
             }
 
@@ -393,8 +393,8 @@ namespace TrayMe
 
             // Tray the window
             TrayMeClass trayMe = new TrayMeClass();
-            if( trayMe.HookTrayWindow( hWnd, Icon.Handle ) == false )
-                MessageBox.Show( this, "Could not hook tray window.", "TrayMe" );
+            if( trayMe.HookTrayWindow( hWnd, Icon.Handle ) )
+                MessageBox.Show( this, "Could not hook the window with the provided handle.", "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 
             // Update status
             UpdateStatus();
@@ -430,27 +430,27 @@ namespace TrayMe
         private void HighlightValidWindow( IntPtr hWnd, IntPtr hOwner )
         {
             // Check for valid highlight
-            if( hCurrentTarget == hWnd )
+            if( targetedWindowHandle == hWnd )
                 return;
 
             // Check for relative
             if( Win32Ex.IsRelativeWindow( hWnd, hOwner, true ) )
             {
                 // Unhighlight last window
-                if( hCurrentTarget != IntPtr.Zero )
+                if( targetedWindowHandle != IntPtr.Zero )
                 {
-                    Win32Ex.HighlightWindow( hCurrentTarget );
-                    hCurrentTarget = IntPtr.Zero;
+                    Win32Ex.HighlightWindow( targetedWindowHandle );
+                    targetedWindowHandle = IntPtr.Zero;
                 }
 
                 return;
             }
 
             // Unhighlight last window
-            Win32Ex.HighlightWindow( hCurrentTarget );
+            Win32Ex.HighlightWindow( targetedWindowHandle );
 
             // Set as current target
-            hCurrentTarget = hWnd;
+            targetedWindowHandle = hWnd;
 
             // Highlight window
             Win32Ex.HighlightWindow( hWnd );
@@ -467,18 +467,18 @@ namespace TrayMe
             {
                 if( trayMe.IsHooked() )
                 {
-                    if( !m_bSubclassed )
+                    if( !isWindowTrayed )
                     {
                         buttonTrayMe.Text = "Un-&Tray Me";
-                        m_bSubclassed = true;
+                        isWindowTrayed = true;
                     }
                 }
                 else
                 {
-                    if( m_bSubclassed )
+                    if( isWindowTrayed )
                     {
                         buttonTrayMe.Text = "&Tray Me!";
-                        m_bSubclassed = false;
+                        isWindowTrayed = false;
                     }
                 }
 
@@ -516,9 +516,9 @@ namespace TrayMe
             Focus();
         }
 
-        private Cursor m_curTarget = null;
-        private bool bTargeting = false;
-        private IntPtr hCurrentTarget = IntPtr.Zero;
-        private bool m_bSubclassed = false;
+        private Cursor targetCursor = null;
+        private bool isWindowTrayed = false;
+        private bool isTargetingWindow = false;
+        private IntPtr targetedWindowHandle = IntPtr.Zero;
     }
 }

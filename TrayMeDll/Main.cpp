@@ -295,6 +295,8 @@ LRESULT HookProc( int code, WPARAM wParam, LPARAM lParam )
 				FreeLibrary( g_hDll );
 		}
 	}
+
+	return CallNextHookEx( g_hHook, code, wParam, lParam );
 }
 
 
@@ -544,8 +546,9 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					nidW.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 			      
 					// Get text
-					if( GetWindowTextW(hWnd, chTempW, sizeof(chTempW)) == 0) chTempW[0] = NULL;
-						wcscpy( nidW.szTip, chTempW );
+					rsize_t chTempW_size = sizeof( chTempW );
+					if( GetWindowTextW(hWnd, chTempW, (int)chTempW_size ) == 0) chTempW[0] = NULL;
+						wcsncpy_s( nidW.szTip, chTempW, chTempW_size );
 			      
 					// Create/copy icon
 					if( ( ( nidW.hIcon = (HICON)SendMessageW( hWnd, WM_GETICON, ( ( bWin9x ) ? ( ICON_SMALL ) : ( 2 ) ), 0 ) ) == NULL ) && ( ( nidW.hIcon = (HICON)GetClassLongW( hWnd, GCL_HICONSM ) ) == NULL ) )
@@ -565,9 +568,10 @@ LRESULT CALLBACK NewProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					nidA.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 			      
 					// Get text
-					if( GetWindowTextA( hWnd, chTempA, sizeof( chTempA ) ) == 0 )
+					size_t chTempA_size = sizeof( chTempA );
+					if( GetWindowTextA( hWnd, chTempA, (int)chTempA_size ) == 0 )
 						chTempA[0] = NULL;
-					strcpy( nidA.szTip, chTempA );
+					strncpy_s( nidA.szTip, chTempA, chTempA_size );
 			      
 					// Create/copy icon
 					if( ( ( nidA.hIcon = (HICON)SendMessageA( hWnd, WM_GETICON, ( (bWin9x) ? (ICON_SMALL) : ( 2 ) ), 0 ) ) == NULL ) && ( ( nidA.hIcon = (HICON)GetClassLongA( hWnd, GCL_HICONSM ) ) == NULL ) )

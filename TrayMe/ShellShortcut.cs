@@ -17,8 +17,8 @@
 *
 * Copyright ©2001-2002, Mattias Sjögren
 * 
-*  Modified 10/28/2004 by Joe Esposito:
-*   - Merged the two files into one
+* Modified 10/28/2004 by Joe Esposito:
+*   Merged the two files into one
 *
 **************************************************************************/
 
@@ -28,8 +28,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows.Forms;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 
 #region Native Code

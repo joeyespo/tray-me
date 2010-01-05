@@ -65,11 +65,12 @@ namespace TrayMe
             }
             catch( Win32Exception )
             {
+                // Ignore false Windows exceptions since the browser still opens.
             }
             catch
             {
                 // Failsafe
-                MessageBox.Show( this, "Could not start browser process.", AppTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show( this, "Could not open the link.", ( AppTitle + " Error" ).TrimStart( ' ' ), MessageBoxButtons.OK, MessageBoxIcon.Error );
             }
         }
 

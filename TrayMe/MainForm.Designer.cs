@@ -115,25 +115,30 @@
             // 
             // buttonClose
             // 
+            this.buttonClose.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point( 276, 92 );
+            this.buttonClose.Location = new System.Drawing.Point( 276, 96 );
             this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size( 100, 29 );
+            this.buttonClose.Size = new System.Drawing.Size( 100, 32 );
             this.buttonClose.TabIndex = 3;
             this.buttonClose.Text = "Cl&ose";
             this.buttonClose.Click += new System.EventHandler( this.buttonClose_Click );
             // 
             // buttonHide
             // 
-            this.buttonHide.Location = new System.Drawing.Point( 276, 56 );
+            this.buttonHide.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.buttonHide.Location = new System.Drawing.Point( 276, 52 );
             this.buttonHide.Name = "buttonHide";
-            this.buttonHide.Size = new System.Drawing.Size( 100, 29 );
+            this.buttonHide.Size = new System.Drawing.Size( 100, 32 );
             this.buttonHide.TabIndex = 2;
             this.buttonHide.Text = "&Hide";
             this.buttonHide.Click += new System.EventHandler( this.buttonHide_Click );
             // 
             // groupTrayMe
             // 
+            this.groupTrayMe.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
+                        | System.Windows.Forms.AnchorStyles.Left )
+                        | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.groupTrayMe.Controls.Add( this.checkTopmost );
             this.groupTrayMe.Controls.Add( this.picTarget );
             this.groupTrayMe.Controls.Add( this.buttonTrayMe );
@@ -147,15 +152,17 @@
             this.groupTrayMe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupTrayMe.Location = new System.Drawing.Point( 8, 8 );
             this.groupTrayMe.Name = "groupTrayMe";
-            this.groupTrayMe.Size = new System.Drawing.Size( 260, 192 );
+            this.groupTrayMe.Size = new System.Drawing.Size( 260, 196 );
             this.groupTrayMe.TabIndex = 0;
             this.groupTrayMe.TabStop = false;
             // 
             // checkTopmost
             // 
+            this.checkTopmost.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
+                        | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.checkTopmost.Checked = true;
             this.checkTopmost.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkTopmost.Location = new System.Drawing.Point( 20, 148 );
+            this.checkTopmost.Location = new System.Drawing.Point( 20, 152 );
             this.checkTopmost.Name = "checkTopmost";
             this.checkTopmost.Size = new System.Drawing.Size( 116, 16 );
             this.checkTopmost.TabIndex = 7;
@@ -176,9 +183,10 @@
             // 
             // buttonTrayMe
             // 
-            this.buttonTrayMe.Location = new System.Drawing.Point( 144, 148 );
+            this.buttonTrayMe.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.buttonTrayMe.Location = new System.Drawing.Point( 148, 148 );
             this.buttonTrayMe.Name = "buttonTrayMe";
-            this.buttonTrayMe.Size = new System.Drawing.Size( 100, 28 );
+            this.buttonTrayMe.Size = new System.Drawing.Size( 100, 36 );
             this.buttonTrayMe.TabIndex = 8;
             this.buttonTrayMe.Text = "&Tray Me!";
             this.buttonTrayMe.Click += new System.EventHandler( this.buttonAttach_Click );
@@ -210,10 +218,12 @@
             // 
             // textCaption
             // 
+            this.textCaption.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
+                        | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.textCaption.Location = new System.Drawing.Point( 68, 92 );
             this.textCaption.Name = "textCaption";
             this.textCaption.ReadOnly = true;
-            this.textCaption.Size = new System.Drawing.Size( 176, 20 );
+            this.textCaption.Size = new System.Drawing.Size( 180, 20 );
             this.textCaption.TabIndex = 4;
             // 
             // labelCharset
@@ -226,10 +236,12 @@
             // 
             // textCharset
             // 
+            this.textCharset.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
+                        | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.textCharset.Location = new System.Drawing.Point( 68, 116 );
             this.textCharset.Name = "textCharset";
             this.textCharset.ReadOnly = true;
-            this.textCharset.Size = new System.Drawing.Size( 176, 20 );
+            this.textCharset.Size = new System.Drawing.Size( 180, 20 );
             this.textCharset.TabIndex = 6;
             // 
             // labelFinderTool
@@ -242,11 +254,12 @@
             // 
             // buttonAbout
             // 
+            this.buttonAbout.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.buttonAbout.Location = new System.Drawing.Point( 276, 12 );
             this.buttonAbout.Name = "buttonAbout";
-            this.buttonAbout.Size = new System.Drawing.Size( 100, 29 );
+            this.buttonAbout.Size = new System.Drawing.Size( 100, 32 );
             this.buttonAbout.TabIndex = 1;
-            this.buttonAbout.Text = "&About...";
+            this.buttonAbout.Text = "&About";
             this.buttonAbout.Click += new System.EventHandler( this.buttonAbout_Click );
             // 
             // MainForm
@@ -254,7 +267,7 @@
             this.AcceptButton = this.buttonTrayMe;
             this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size( 386, 212 );
+            this.ClientSize = new System.Drawing.Size( 386, 216 );
             this.Controls.Add( this.groupTrayMe );
             this.Controls.Add( this.buttonClose );
             this.Controls.Add( this.buttonHide );
