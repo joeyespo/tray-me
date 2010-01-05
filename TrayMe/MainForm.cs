@@ -44,7 +44,8 @@ namespace TrayMe
             isTargetingWindow = true;
             targetedWindowHandle = IntPtr.Zero;
 
-            // Show info   FIX: Put into function for mousemove & mousedown
+            // TODO: Put into function for mousemove & mousedown
+            // Show info
             ShowWindowInfo( picTarget.Handle, true );
         }
 
@@ -94,7 +95,7 @@ namespace TrayMe
             IntPtr hTemp;
             Win32.POINTAPI pt;
 
-            // FIX: Draw border around EVERY window
+            // TODO: Draw border around EVERY window
 
             pt.x = e.X;
             pt.y = e.Y;
@@ -123,14 +124,15 @@ namespace TrayMe
                     hWnd = hTemp;
                 }
 
-                /* FIX: Work with ALL windows
+                // TODO: Work with ALL windows
+                /*
                 Win32.ScreenToClient(hWnd, ref pt);
                 Win32.MapWindowPoints(IntPtr.Zero, hWnd, ref pt, 2);
                 if ((hTemp = (IntPtr)Win32.ChildWindowFromPoint(hWnd, pt.x, pt.y)) != IntPtr.Zero) 
                 {
                   hWnd = hTemp;
                 }
-                // */
+                */
             }
 
             // Get owner
@@ -393,7 +395,7 @@ namespace TrayMe
 
             // Tray the window
             TrayMeClass trayMe = new TrayMeClass();
-            if( trayMe.HookTrayWindow( hWnd, Icon.Handle ) )
+            if( !trayMe.HookTrayWindow( hWnd, Icon.Handle ) )
                 MessageBox.Show( this, "Could not hook the window with the provided handle.", "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 
             // Update status

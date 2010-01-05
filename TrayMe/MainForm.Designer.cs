@@ -152,7 +152,7 @@
             this.groupTrayMe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupTrayMe.Location = new System.Drawing.Point( 8, 8 );
             this.groupTrayMe.Name = "groupTrayMe";
-            this.groupTrayMe.Size = new System.Drawing.Size( 260, 196 );
+            this.groupTrayMe.Size = new System.Drawing.Size( 260, 192 );
             this.groupTrayMe.TabIndex = 0;
             this.groupTrayMe.TabStop = false;
             // 
@@ -186,7 +186,7 @@
             this.buttonTrayMe.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
             this.buttonTrayMe.Location = new System.Drawing.Point( 148, 148 );
             this.buttonTrayMe.Name = "buttonTrayMe";
-            this.buttonTrayMe.Size = new System.Drawing.Size( 100, 36 );
+            this.buttonTrayMe.Size = new System.Drawing.Size( 100, 32 );
             this.buttonTrayMe.TabIndex = 8;
             this.buttonTrayMe.Text = "&Tray Me!";
             this.buttonTrayMe.Click += new System.EventHandler( this.buttonAttach_Click );
@@ -267,7 +267,7 @@
             this.AcceptButton = this.buttonTrayMe;
             this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size( 386, 216 );
+            this.ClientSize = new System.Drawing.Size( 386, 212 );
             this.Controls.Add( this.groupTrayMe );
             this.Controls.Add( this.buttonClose );
             this.Controls.Add( this.buttonHide );
