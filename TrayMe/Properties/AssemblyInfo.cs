@@ -10,9 +10,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TrayMe")]
 [assembly: AssemblyDescription("Add any target window to the tray/notification bar.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Uber-ware")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TrayMe")]
-[assembly: AssemblyCopyright("Copyright (C) 2004-2010 Uber-ware")]
+[assembly: AssemblyCopyright("Copyright (C) 2004-2011 Joe Esposito")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion( "1.6.0.0" )]
+[assembly: AssemblyVersion( "1.7.0.0" )]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
