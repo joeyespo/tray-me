@@ -1,11 +1,12 @@
 TrayMe
-======
+------
 
 A small application that allows you send a window to the notification area.
 Targeting a window is as easy as drag and drop, as inspired by Spy++.
 
+
 Usage
-=====
+-----
 
 Run the executable and target a window, or enter the window's handle, then
 click "Tray Me!" This will hook into the process of the window. When you
@@ -31,8 +32,9 @@ Options:
 Here, target is the path to an executable to run and automatically tray,
 and cmd is any command line arguments to pass to it.
 
+
 Compatibility
-=============
+-------------
 
 This is known to work on Windows 98 and XP. Currently, only one window is
 trayable at a time. However, more than one can be trayed by having multiple
