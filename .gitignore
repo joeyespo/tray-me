@@ -24,7 +24,7 @@
 *.ncb
 *.plg
 *.bsc
-*.ilk 
+*.ilk
 *.exp
 *.sbr
 *.opt
@@ -34,18 +34,20 @@
 *.res
 *.user
 *.sln.cache
+*.sdf
+*.opensdf
 ./Resharp*
 
 # Build and Debug Files
-build/*
-Build/*
-BUILD/*
-bin/*
-Bin/*
-BIN/*
-obj/*
-Obj/*
-OBJ/*
+build/
+Build/
+BUILD/
+bin/
+Bin/
+BIN/
+obj/
+Obj/
+OBJ/
 *.exe
 *.ex_
 
