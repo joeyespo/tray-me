@@ -32,13 +32,13 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose( bool disposing )
+        protected override void Dispose(bool disposing)
         {
-            if( disposing && ( components != null ) )
+            if (disposing && (components != null))
             {
                 components.Dispose();
             }
-            base.Dispose( disposing );
+            base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code
@@ -50,10 +50,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( MainForm ) );
-            this.imageList = new System.Windows.Forms.ImageList( this.components );
-            this.timerCheck = new System.Windows.Forms.Timer( this.components );
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon( this.components );
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.timerCheck = new System.Windows.Forms.Timer(this.components);
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuTrayMenu = new System.Windows.Forms.ContextMenu();
             this.menuTrayMenuStatus = new System.Windows.Forms.MenuItem();
             this.menuTrayMenuExit = new System.Windows.Forms.MenuItem();
@@ -72,219 +72,219 @@
             this.labelFinderTool = new System.Windows.Forms.Label();
             this.buttonAbout = new System.Windows.Forms.Button();
             this.groupTrayMe.SuspendLayout();
-            ( (System.ComponentModel.ISupportInitialize)( this.picTarget ) ).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picTarget)).BeginInit();
             this.SuspendLayout();
             // 
             // imageList
             // 
-            this.imageList.ImageStream = ( (System.Windows.Forms.ImageListStreamer)( resources.GetObject( "imageList.ImageStream" ) ) );
+            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
             this.imageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList.Images.SetKeyName( 0, "" );
-            this.imageList.Images.SetKeyName( 1, "" );
+            this.imageList.Images.SetKeyName(0, "");
+            this.imageList.Images.SetKeyName(1, "");
             // 
             // timerCheck
             // 
             this.timerCheck.Enabled = true;
-            this.timerCheck.Tick += new System.EventHandler( this.timerCheck_Tick );
+            this.timerCheck.Tick += new System.EventHandler(this.timerCheck_Tick);
             // 
             // notifyIcon
             // 
             this.notifyIcon.ContextMenu = this.menuTrayMenu;
-            this.notifyIcon.Icon = ( (System.Drawing.Icon)( resources.GetObject( "notifyIcon.Icon" ) ) );
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "TrayMe";
-            this.notifyIcon.DoubleClick += new System.EventHandler( this.notifyIcon_DoubleClick );
+            this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
             // 
             // menuTrayMenu
             // 
-            this.menuTrayMenu.MenuItems.AddRange( new System.Windows.Forms.MenuItem[] {
+            this.menuTrayMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuTrayMenuStatus,
-            this.menuTrayMenuExit} );
+            this.menuTrayMenuExit});
             // 
             // menuTrayMenuStatus
             // 
             this.menuTrayMenuStatus.DefaultItem = true;
             this.menuTrayMenuStatus.Index = 0;
             this.menuTrayMenuStatus.Text = "&Status...";
-            this.menuTrayMenuStatus.Click += new System.EventHandler( this.menuTrayMenuStatus_Click );
+            this.menuTrayMenuStatus.Click += new System.EventHandler(this.menuTrayMenuStatus_Click);
             // 
             // menuTrayMenuExit
             // 
             this.menuTrayMenuExit.Index = 1;
             this.menuTrayMenuExit.Text = "&Exit";
-            this.menuTrayMenuExit.Click += new System.EventHandler( this.menuTrayMenuExit_Click );
+            this.menuTrayMenuExit.Click += new System.EventHandler(this.menuTrayMenuExit_Click);
             // 
             // buttonClose
             // 
-            this.buttonClose.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonClose.Location = new System.Drawing.Point( 276, 96 );
+            this.buttonClose.Location = new System.Drawing.Point(276, 96);
             this.buttonClose.Name = "buttonClose";
-            this.buttonClose.Size = new System.Drawing.Size( 100, 32 );
+            this.buttonClose.Size = new System.Drawing.Size(100, 32);
             this.buttonClose.TabIndex = 3;
             this.buttonClose.Text = "Cl&ose";
-            this.buttonClose.Click += new System.EventHandler( this.buttonClose_Click );
+            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 
             // buttonHide
             // 
-            this.buttonHide.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.buttonHide.Location = new System.Drawing.Point( 276, 52 );
+            this.buttonHide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonHide.Location = new System.Drawing.Point(276, 52);
             this.buttonHide.Name = "buttonHide";
-            this.buttonHide.Size = new System.Drawing.Size( 100, 32 );
+            this.buttonHide.Size = new System.Drawing.Size(100, 32);
             this.buttonHide.TabIndex = 2;
             this.buttonHide.Text = "&Hide";
-            this.buttonHide.Click += new System.EventHandler( this.buttonHide_Click );
+            this.buttonHide.Click += new System.EventHandler(this.buttonHide_Click);
             // 
             // groupTrayMe
             // 
-            this.groupTrayMe.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
-                        | System.Windows.Forms.AnchorStyles.Left )
-                        | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.groupTrayMe.Controls.Add( this.checkTopmost );
-            this.groupTrayMe.Controls.Add( this.picTarget );
-            this.groupTrayMe.Controls.Add( this.buttonTrayMe );
-            this.groupTrayMe.Controls.Add( this.labelHandle );
-            this.groupTrayMe.Controls.Add( this.textHandle );
-            this.groupTrayMe.Controls.Add( this.labelCaption );
-            this.groupTrayMe.Controls.Add( this.textCaption );
-            this.groupTrayMe.Controls.Add( this.labelCharset );
-            this.groupTrayMe.Controls.Add( this.textCharset );
-            this.groupTrayMe.Controls.Add( this.labelFinderTool );
+            this.groupTrayMe.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupTrayMe.Controls.Add(this.checkTopmost);
+            this.groupTrayMe.Controls.Add(this.picTarget);
+            this.groupTrayMe.Controls.Add(this.buttonTrayMe);
+            this.groupTrayMe.Controls.Add(this.labelHandle);
+            this.groupTrayMe.Controls.Add(this.textHandle);
+            this.groupTrayMe.Controls.Add(this.labelCaption);
+            this.groupTrayMe.Controls.Add(this.textCaption);
+            this.groupTrayMe.Controls.Add(this.labelCharset);
+            this.groupTrayMe.Controls.Add(this.textCharset);
+            this.groupTrayMe.Controls.Add(this.labelFinderTool);
             this.groupTrayMe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupTrayMe.Location = new System.Drawing.Point( 8, 8 );
+            this.groupTrayMe.Location = new System.Drawing.Point(8, 8);
             this.groupTrayMe.Name = "groupTrayMe";
-            this.groupTrayMe.Size = new System.Drawing.Size( 260, 192 );
+            this.groupTrayMe.Size = new System.Drawing.Size(260, 192);
             this.groupTrayMe.TabIndex = 0;
             this.groupTrayMe.TabStop = false;
             // 
             // checkTopmost
             // 
-            this.checkTopmost.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
-                        | System.Windows.Forms.AnchorStyles.Right ) ) );
+            this.checkTopmost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.checkTopmost.Checked = true;
             this.checkTopmost.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkTopmost.Location = new System.Drawing.Point( 20, 152 );
+            this.checkTopmost.Location = new System.Drawing.Point(20, 152);
             this.checkTopmost.Name = "checkTopmost";
-            this.checkTopmost.Size = new System.Drawing.Size( 116, 16 );
+            this.checkTopmost.Size = new System.Drawing.Size(116, 16);
             this.checkTopmost.TabIndex = 7;
             this.checkTopmost.Text = "Topmost";
-            this.checkTopmost.CheckedChanged += new System.EventHandler( this.checkTopmost_CheckedChanged );
+            this.checkTopmost.CheckedChanged += new System.EventHandler(this.checkTopmost_CheckedChanged);
             // 
             // picTarget
             // 
             this.picTarget.BackColor = System.Drawing.Color.White;
-            this.picTarget.Location = new System.Drawing.Point( 108, 28 );
+            this.picTarget.Location = new System.Drawing.Point(108, 28);
             this.picTarget.Name = "picTarget";
-            this.picTarget.Size = new System.Drawing.Size( 31, 28 );
+            this.picTarget.Size = new System.Drawing.Size(31, 28);
             this.picTarget.TabIndex = 13;
             this.picTarget.TabStop = false;
-            this.picTarget.MouseMove += new System.Windows.Forms.MouseEventHandler( this.picTarget_MouseMove );
-            this.picTarget.MouseDown += new System.Windows.Forms.MouseEventHandler( this.picTarget_MouseDown );
-            this.picTarget.MouseUp += new System.Windows.Forms.MouseEventHandler( this.picTarget_MouseUp );
+            this.picTarget.MouseMove += new System.Windows.Forms.MouseEventHandler(this.picTarget_MouseMove);
+            this.picTarget.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picTarget_MouseDown);
+            this.picTarget.MouseUp += new System.Windows.Forms.MouseEventHandler(this.picTarget_MouseUp);
             // 
             // buttonTrayMe
             // 
-            this.buttonTrayMe.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.buttonTrayMe.Location = new System.Drawing.Point( 148, 148 );
+            this.buttonTrayMe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonTrayMe.Location = new System.Drawing.Point(148, 148);
             this.buttonTrayMe.Name = "buttonTrayMe";
-            this.buttonTrayMe.Size = new System.Drawing.Size( 100, 32 );
+            this.buttonTrayMe.Size = new System.Drawing.Size(100, 32);
             this.buttonTrayMe.TabIndex = 8;
             this.buttonTrayMe.Text = "&Tray Me!";
-            this.buttonTrayMe.Click += new System.EventHandler( this.buttonAttach_Click );
+            this.buttonTrayMe.Click += new System.EventHandler(this.buttonAttach_Click);
             // 
             // labelHandle
             // 
-            this.labelHandle.Location = new System.Drawing.Point( 16, 72 );
+            this.labelHandle.Location = new System.Drawing.Point(16, 72);
             this.labelHandle.Name = "labelHandle";
-            this.labelHandle.Size = new System.Drawing.Size( 48, 16 );
+            this.labelHandle.Size = new System.Drawing.Size(48, 16);
             this.labelHandle.TabIndex = 1;
             this.labelHandle.Text = "H&andle:";
             // 
             // textHandle
             // 
-            this.textHandle.Location = new System.Drawing.Point( 68, 68 );
+            this.textHandle.Location = new System.Drawing.Point(68, 68);
             this.textHandle.MaxLength = 8;
             this.textHandle.Name = "textHandle";
-            this.textHandle.Size = new System.Drawing.Size( 72, 20 );
+            this.textHandle.Size = new System.Drawing.Size(72, 20);
             this.textHandle.TabIndex = 2;
-            this.textHandle.TextChanged += new System.EventHandler( this.textHandle_TextChanged );
+            this.textHandle.TextChanged += new System.EventHandler(this.textHandle_TextChanged);
             // 
             // labelCaption
             // 
-            this.labelCaption.Location = new System.Drawing.Point( 16, 96 );
+            this.labelCaption.Location = new System.Drawing.Point(16, 96);
             this.labelCaption.Name = "labelCaption";
-            this.labelCaption.Size = new System.Drawing.Size( 48, 16 );
+            this.labelCaption.Size = new System.Drawing.Size(48, 16);
             this.labelCaption.TabIndex = 3;
             this.labelCaption.Text = "&Caption:";
             // 
             // textCaption
             // 
-            this.textCaption.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
-                        | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.textCaption.Location = new System.Drawing.Point( 68, 92 );
+            this.textCaption.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textCaption.Location = new System.Drawing.Point(68, 92);
             this.textCaption.Name = "textCaption";
             this.textCaption.ReadOnly = true;
-            this.textCaption.Size = new System.Drawing.Size( 180, 20 );
+            this.textCaption.Size = new System.Drawing.Size(180, 20);
             this.textCaption.TabIndex = 4;
             // 
             // labelCharset
             // 
-            this.labelCharset.Location = new System.Drawing.Point( 16, 120 );
+            this.labelCharset.Location = new System.Drawing.Point(16, 120);
             this.labelCharset.Name = "labelCharset";
-            this.labelCharset.Size = new System.Drawing.Size( 48, 16 );
+            this.labelCharset.Size = new System.Drawing.Size(48, 16);
             this.labelCharset.TabIndex = 5;
             this.labelCharset.Text = "C&harset:";
             // 
             // textCharset
             // 
-            this.textCharset.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left )
-                        | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.textCharset.Location = new System.Drawing.Point( 68, 116 );
+            this.textCharset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textCharset.Location = new System.Drawing.Point(68, 116);
             this.textCharset.Name = "textCharset";
             this.textCharset.ReadOnly = true;
-            this.textCharset.Size = new System.Drawing.Size( 180, 20 );
+            this.textCharset.Size = new System.Drawing.Size(180, 20);
             this.textCharset.TabIndex = 6;
             // 
             // labelFinderTool
             // 
-            this.labelFinderTool.Location = new System.Drawing.Point( 16, 36 );
+            this.labelFinderTool.Location = new System.Drawing.Point(16, 36);
             this.labelFinderTool.Name = "labelFinderTool";
-            this.labelFinderTool.Size = new System.Drawing.Size( 84, 16 );
+            this.labelFinderTool.Size = new System.Drawing.Size(84, 16);
             this.labelFinderTool.TabIndex = 0;
             this.labelFinderTool.Text = "Finder Tool:";
             // 
             // buttonAbout
             // 
-            this.buttonAbout.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.buttonAbout.Location = new System.Drawing.Point( 276, 12 );
+            this.buttonAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAbout.Location = new System.Drawing.Point(276, 12);
             this.buttonAbout.Name = "buttonAbout";
-            this.buttonAbout.Size = new System.Drawing.Size( 100, 32 );
+            this.buttonAbout.Size = new System.Drawing.Size(100, 32);
             this.buttonAbout.TabIndex = 1;
             this.buttonAbout.Text = "&About";
-            this.buttonAbout.Click += new System.EventHandler( this.buttonAbout_Click );
+            this.buttonAbout.Click += new System.EventHandler(this.buttonAbout_Click);
             // 
             // MainForm
             // 
             this.AcceptButton = this.buttonTrayMe;
-            this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.CancelButton = this.buttonClose;
-            this.ClientSize = new System.Drawing.Size( 386, 212 );
-            this.Controls.Add( this.groupTrayMe );
-            this.Controls.Add( this.buttonClose );
-            this.Controls.Add( this.buttonHide );
-            this.Controls.Add( this.buttonAbout );
+            this.ClientSize = new System.Drawing.Size(386, 212);
+            this.Controls.Add(this.groupTrayMe);
+            this.Controls.Add(this.buttonClose);
+            this.Controls.Add(this.buttonHide);
+            this.Controls.Add(this.buttonAbout);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ( (System.Drawing.Icon)( resources.GetObject( "$this.Icon" ) ) );
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TrayMe - Inactive";
             this.TopMost = true;
-            this.Load += new System.EventHandler( this.MainForm_Load );
-            this.Activated += new System.EventHandler( this.MainForm_Activated );
-            this.groupTrayMe.ResumeLayout( false );
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Activated += new System.EventHandler(this.MainForm_Activated);
+            this.groupTrayMe.ResumeLayout(false);
             this.groupTrayMe.PerformLayout();
-            ( (System.ComponentModel.ISupportInitialize)( this.picTarget ) ).EndInit();
-            this.ResumeLayout( false );
+            ((System.ComponentModel.ISupportInitialize)(this.picTarget)).EndInit();
+            this.ResumeLayout(false);
 
         }
 

@@ -31,14 +31,14 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
-        private void picTarget_MouseDown( object sender, System.Windows.Forms.MouseEventArgs e )
+        private void picTarget_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             // Set capture image and cursor
             picTarget.Image = imageList.Images[1];
             picTarget.Cursor = targetCursor;
 
             // Set capture
-            Win32.SetCapture( picTarget.Handle );
+            Win32.SetCapture(picTarget.Handle);
 
             // Begin targeting
             isTargetingWindow = true;
@@ -46,7 +46,7 @@ namespace TrayMe
 
             // TODO: Put into function for mousemove & mousedown
             // Show info
-            ShowWindowInfo( picTarget.Handle, true );
+            ShowWindowInfo(picTarget.Handle, true);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
-        private void picTarget_MouseUp( object sender, System.Windows.Forms.MouseEventArgs e )
+        private void picTarget_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             IntPtr hWnd;
             IntPtr hTemp;
@@ -63,8 +63,8 @@ namespace TrayMe
             isTargetingWindow = false;
 
             // Unhighlight window
-            if( targetedWindowHandle != IntPtr.Zero )
-                Win32Ex.HighlightWindow( targetedWindowHandle );
+            if (targetedWindowHandle != IntPtr.Zero)
+                Win32Ex.HighlightWindow(targetedWindowHandle);
             targetedWindowHandle = IntPtr.Zero;
 
             // Reset capture image and cursor
@@ -72,16 +72,16 @@ namespace TrayMe
             picTarget.Image = imageList.Images[0];
 
             // Get screen coords from client coords and window handle
-            hWnd = Win32Ex.WindowFromPoint( picTarget.Handle, e.X, e.Y );
+            hWnd = Win32Ex.WindowFromPoint(picTarget.Handle, e.X, e.Y);
 
             // Get owner
-            while( ( hTemp = Win32.GetParent( hWnd ) ) != IntPtr.Zero )
+            while ((hTemp = Win32.GetParent(hWnd)) != IntPtr.Zero)
                 hWnd = hTemp;
 
-            ShowWindowInfo( hWnd, true );
+            ShowWindowInfo(hWnd, true);
 
             // Release capture
-            Win32.SetCapture( IntPtr.Zero );
+            Win32.SetCapture(IntPtr.Zero);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.Windows.Forms.MouseEventArgs"/> instance containing the event data.</param>
-        private void picTarget_MouseMove( object sender, System.Windows.Forms.MouseEventArgs e )
+        private void picTarget_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             IntPtr hWnd;
             IntPtr hTemp;
@@ -99,27 +99,27 @@ namespace TrayMe
 
             pt.x = e.X;
             pt.y = e.Y;
-            Win32.ClientToScreen( picTarget.Handle, ref pt );
+            Win32.ClientToScreen(picTarget.Handle, ref pt);
 
             // Make sure targeting before highlighting windows
-            if( !isTargetingWindow )
+            if (!isTargetingWindow)
                 return;
 
             // Get screen coords from client coords and window handle
-            hWnd = Win32Ex.WindowFromPoint( picTarget.Handle, e.X, e.Y );
+            hWnd = Win32Ex.WindowFromPoint(picTarget.Handle, e.X, e.Y);
 
             // Get real window
-            if( hWnd != IntPtr.Zero )
+            if (hWnd != IntPtr.Zero)
             {
                 hTemp = IntPtr.Zero;
 
-                while( true )
+                while (true)
                 {
-                    Win32.MapWindowPoints( hTemp, hWnd, ref pt, 1 );
-                    hTemp = (IntPtr)Win32.ChildWindowFromPoint( hWnd, pt.x, pt.y );
-                    if( hTemp == IntPtr.Zero )
+                    Win32.MapWindowPoints(hTemp, hWnd, ref pt, 1);
+                    hTemp = (IntPtr)Win32.ChildWindowFromPoint(hWnd, pt.x, pt.y);
+                    if (hTemp == IntPtr.Zero)
                         break;
-                    if( hWnd == hTemp )
+                    if (hWnd == hTemp)
                         break;
                     hWnd = hTemp;
                 }
@@ -136,14 +136,14 @@ namespace TrayMe
             }
 
             // Get owner
-            while( ( hTemp = Win32.GetParent( hWnd ) ) != IntPtr.Zero )
+            while ((hTemp = Win32.GetParent(hWnd)) != IntPtr.Zero)
                 hWnd = hTemp;
 
             // Show info
-            ShowWindowInfo( hWnd, true );
+            ShowWindowInfo(hWnd, true);
 
             // Highlight valid window
-            HighlightValidWindow( hWnd, Handle );
+            HighlightValidWindow(hWnd, Handle);
 
         }
 
@@ -156,7 +156,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void menuTrayMenuExit_Click( object sender, System.EventArgs e )
+        private void menuTrayMenuExit_Click(object sender, System.EventArgs e)
         {
             Close();
         }
@@ -166,7 +166,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void menuTrayMenuStatus_Click( object sender, System.EventArgs e )
+        private void menuTrayMenuStatus_Click(object sender, System.EventArgs e)
         {
             ShowTrayStatus();
         }
@@ -176,7 +176,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void notifyIcon_DoubleClick( object sender, System.EventArgs e )
+        private void notifyIcon_DoubleClick(object sender, System.EventArgs e)
         {
             ShowTrayStatus();
         }
@@ -188,20 +188,20 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void MainForm_Load( object sender, System.EventArgs e )
+        private void MainForm_Load(object sender, System.EventArgs e)
         {
             try
             {
-                using( MemoryStream ms = new MemoryStream( Properties.Resources.curTarget ) )
-                    targetCursor = new Cursor( ms );
+                using (MemoryStream ms = new MemoryStream(Properties.Resources.curTarget))
+                    targetCursor = new Cursor(ms);
             }
-            catch( Exception x )
+            catch (Exception x)
             {
                 // Show error
-                MessageBox.Show( this, "Could not load the \"Target\" cursor." + Environment.NewLine + Environment.NewLine + x.ToString(), "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show(this, "Could not load the \"Target\" cursor." + Environment.NewLine + Environment.NewLine + x.ToString(), "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 // Attempt to use backup cursor
-                if( targetCursor == null )
+                if (targetCursor == null)
                     targetCursor = Cursors.Cross;
             }
 
@@ -218,9 +218,9 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void MainForm_Activated( object sender, System.EventArgs e )
+        private void MainForm_Activated(object sender, System.EventArgs e)
         {
-            if( !notifyIcon.Visible )
+            if (!notifyIcon.Visible)
                 notifyIcon.Visible = true;
         }
 
@@ -229,10 +229,10 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void buttonAbout_Click( object sender, System.EventArgs e )
+        private void buttonAbout_Click(object sender, System.EventArgs e)
         {
             AboutForm about = new AboutForm();
-            about.ShowDialog( this );
+            about.ShowDialog(this);
             about.Dispose();
         }
 
@@ -241,9 +241,9 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void buttonAttach_Click( object sender, System.EventArgs e )
+        private void buttonAttach_Click(object sender, System.EventArgs e)
         {
-            if( IsAttached() )
+            if (IsAttached())
                 DoDetach();
             else
                 DoAttach();
@@ -254,7 +254,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void checkTopmost_CheckedChanged( object sender, System.EventArgs e )
+        private void checkTopmost_CheckedChanged(object sender, System.EventArgs e)
         {
             TopMost = checkTopmost.Checked;
         }
@@ -264,20 +264,20 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void textHandle_TextChanged( object sender, System.EventArgs e )
+        private void textHandle_TextChanged(object sender, System.EventArgs e)
         {
             IntPtr hWnd;
 
             try
             {
-                hWnd = (IntPtr)Convert.ToInt32( textHandle.Text, 16 );
+                hWnd = (IntPtr)Convert.ToInt32(textHandle.Text, 16);
             }
             catch
             {
                 hWnd = IntPtr.Zero;
             }
 
-            ShowWindowInfo( hWnd, false );
+            ShowWindowInfo(hWnd, false);
         }
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void buttonClose_Click( object sender, System.EventArgs e )
+        private void buttonClose_Click(object sender, System.EventArgs e)
         {
             Close();
         }
@@ -295,7 +295,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void buttonHide_Click( object sender, System.EventArgs e )
+        private void buttonHide_Click(object sender, System.EventArgs e)
         {
             Hide();
         }
@@ -305,7 +305,7 @@ namespace TrayMe
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void timerCheck_Tick( object sender, System.EventArgs e )
+        private void timerCheck_Tick(object sender, System.EventArgs e)
         {
             UpdateStatus();
         }
@@ -320,7 +320,7 @@ namespace TrayMe
         /// <returns>true, if a window is currently attached; otherwise, false.</returns>
         public bool IsAttached()
         {
-            return ( new TrayMeClass() ).IsHooked();
+            return (new TrayMeClass()).IsHooked();
         }
 
         /// <summary>
@@ -331,11 +331,11 @@ namespace TrayMe
         {
             // Check for trayed window
             TrayMeClass trayMe = new TrayMeClass();
-            if( trayMe.IsHooked() )
+            if (trayMe.IsHooked())
             {
-                if( trayMe.HookTrayWindow( IntPtr.Zero, IntPtr.Zero ) == true )
+                if (trayMe.HookTrayWindow(IntPtr.Zero, IntPtr.Zero) == true)
                 {
-                    MessageBox.Show( this, "Could not unhook currently trayed window.", "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                    MessageBox.Show(this, "Could not unhook currently trayed window.", "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -354,26 +354,26 @@ namespace TrayMe
             IntPtr hWnd;
 
             // Failsafe
-            if( !UpdateStatus() )
+            if (!UpdateStatus())
                 return false;
 
             // Validate input
             try
             {
-                hWnd = (IntPtr)Convert.ToInt32( textHandle.Text, 16 );
+                hWnd = (IntPtr)Convert.ToInt32(textHandle.Text, 16);
             }
             catch
             {
                 hWnd = IntPtr.Zero;
             }
-            if( Win32.IsWindow( hWnd ) == 0 )
+            if (Win32.IsWindow(hWnd) == 0)
             {
-                MessageBox.Show( this, "Please enter a valid handle.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Information );
+                MessageBox.Show(this, "Please enter a valid handle.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
             // Attach new window
-            return DoAttach( hWnd );
+            return DoAttach(hWnd);
         }
 
         /// <summary>
@@ -381,22 +381,22 @@ namespace TrayMe
         /// </summary>
         /// <param name="hWnd">The handle to the window to attach to.</param>
         /// <returns>true if the window is now attached; otherwise, false.</returns>
-        public bool DoAttach( IntPtr hWnd )
+        public bool DoAttach(IntPtr hWnd)
         {
             // Failsafe
-            if( !UpdateStatus() )
+            if (!UpdateStatus())
                 return false;
-            if( hWnd == IntPtr.Zero )
+            if (hWnd == IntPtr.Zero)
                 return false;
 
             // Detach old window
-            if( !DoDetach() )
+            if (!DoDetach())
                 return false;
 
             // Tray the window
             TrayMeClass trayMe = new TrayMeClass();
-            if( !trayMe.HookTrayWindow( hWnd, Icon.Handle ) )
-                MessageBox.Show( this, "Could not hook the window with the provided handle.", "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            if (!trayMe.HookTrayWindow(hWnd, Icon.Handle))
+                MessageBox.Show(this, "Could not hook the window with the provided handle.", "TrayMe Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             // Update status
             UpdateStatus();
@@ -408,11 +408,11 @@ namespace TrayMe
         /// <summary>
         /// Shows the information of the window with the specified handle.
         /// </summary>
-        private void ShowWindowInfo( IntPtr hWnd, bool handle )
+        private void ShowWindowInfo(IntPtr hWnd, bool handle)
         {
-            if( ( Win32.IsWindow( hWnd ) == 0 ) || ( Win32Ex.IsRelativeWindow( hWnd, Handle, true ) ) )
+            if ((Win32.IsWindow(hWnd) == 0) || (Win32Ex.IsRelativeWindow(hWnd, Handle, true)))
             {
-                if( handle )
+                if (handle)
                     textHandle.Text = "";
                 textCaption.Text = "";
                 textCharset.Text = "";
@@ -420,28 +420,28 @@ namespace TrayMe
             }
 
             // Set window information
-            if( handle )
-                textHandle.Text = Convert.ToString( hWnd.ToInt32(), 16 ).ToUpper().PadLeft( 8, '0' );
-            textCaption.Text = Win32Ex.GetWindowText( hWnd );
-            textCharset.Text = ( ( Win32.IsWindowUnicode( hWnd ) != 0 ) ? ( "Unicode" ) : ( "Ansi" ) );
+            if (handle)
+                textHandle.Text = Convert.ToString(hWnd.ToInt32(), 16).ToUpper().PadLeft(8, '0');
+            textCaption.Text = Win32Ex.GetWindowText(hWnd);
+            textCharset.Text = ((Win32.IsWindowUnicode(hWnd) != 0) ? ("Unicode") : ("Ansi"));
         }
 
         /// <summary>
         /// Highlights the specified window, if valid.
         /// </summary>
-        private void HighlightValidWindow( IntPtr hWnd, IntPtr hOwner )
+        private void HighlightValidWindow(IntPtr hWnd, IntPtr hOwner)
         {
             // Check for valid highlight
-            if( targetedWindowHandle == hWnd )
+            if (targetedWindowHandle == hWnd)
                 return;
 
             // Check for relative
-            if( Win32Ex.IsRelativeWindow( hWnd, hOwner, true ) )
+            if (Win32Ex.IsRelativeWindow(hWnd, hOwner, true))
             {
                 // Unhighlight last window
-                if( targetedWindowHandle != IntPtr.Zero )
+                if (targetedWindowHandle != IntPtr.Zero)
                 {
-                    Win32Ex.HighlightWindow( targetedWindowHandle );
+                    Win32Ex.HighlightWindow(targetedWindowHandle);
                     targetedWindowHandle = IntPtr.Zero;
                 }
 
@@ -449,13 +449,13 @@ namespace TrayMe
             }
 
             // Unhighlight last window
-            Win32Ex.HighlightWindow( targetedWindowHandle );
+            Win32Ex.HighlightWindow(targetedWindowHandle);
 
             // Set as current target
             targetedWindowHandle = hWnd;
 
             // Highlight window
-            Win32Ex.HighlightWindow( hWnd );
+            Win32Ex.HighlightWindow(hWnd);
         }
 
         /// <summary>
@@ -467,9 +467,9 @@ namespace TrayMe
 
             try
             {
-                if( trayMe.IsHooked() )
+                if (trayMe.IsHooked())
                 {
-                    if( !isWindowTrayed )
+                    if (!isWindowTrayed)
                     {
                         buttonTrayMe.Text = "Un-&Tray Me";
                         isWindowTrayed = true;
@@ -477,29 +477,29 @@ namespace TrayMe
                 }
                 else
                 {
-                    if( isWindowTrayed )
+                    if (isWindowTrayed)
                     {
                         buttonTrayMe.Text = "&Tray Me!";
                         isWindowTrayed = false;
                     }
                 }
 
-                if( !buttonTrayMe.Enabled )
+                if (!buttonTrayMe.Enabled)
                     buttonTrayMe.Enabled = true;
 
                 return true;
             }
-            catch( DllNotFoundException )
+            catch (DllNotFoundException)
             {
-                if( buttonTrayMe.Enabled )
+                if (buttonTrayMe.Enabled)
                 {
                     buttonTrayMe.Enabled = false;
                     buttonTrayMe.Text = "Missing Dll";
                 }
             }
-            catch( EntryPointNotFoundException )
+            catch (EntryPointNotFoundException)
             {
-                if( buttonTrayMe.Enabled )
+                if (buttonTrayMe.Enabled)
                 {
                     buttonTrayMe.Enabled = false;
                     buttonTrayMe.Text = "Bad Dll";

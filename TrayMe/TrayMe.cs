@@ -20,34 +20,34 @@ namespace TrayMe
         /// </summary>
         public bool IsHooked()
         {
-            return ( IsSubclassed() != 0 );
+            return (IsSubclassed() != 0);
         }
 
         // Hooks (subclasses) the window
         /// <summary>
         /// Hooks (subclasses) the specified window.
         /// </summary>
-        public bool HookTrayWindow( IntPtr hWnd, IntPtr hIcon )
+        public bool HookTrayWindow(IntPtr hWnd, IntPtr hIcon)
         {
-            if( IsSubclassed() == 0 )
+            if (IsSubclassed() == 0)
             {
-                InjectDll( hWnd );
+                InjectDll(hWnd);
             }
             else
             {
                 UnmapDll();
             }
 
-            return ( IsSubclassed() != 0 );
+            return (IsSubclassed() != 0);
         }
 
-        [DllImport( "TrayMe.dll", EntryPoint = "IsSubclassed", SetLastError = false, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.Winapi )]
+        [DllImport("TrayMe.dll", EntryPoint = "IsSubclassed", SetLastError = false, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
         private static extern int IsSubclassed();
 
-        [DllImport( "TrayMe.dll", EntryPoint = "InjectDll", SetLastError = false, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.Winapi )]
-        private static extern int InjectDll( IntPtr hWnd );
+        [DllImport("TrayMe.dll", EntryPoint = "InjectDll", SetLastError = false, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
+        private static extern int InjectDll(IntPtr hWnd);
 
-        [DllImport( "TrayMe.dll", EntryPoint = "UnmapDll", SetLastError = false, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.Winapi )]
+        [DllImport("TrayMe.dll", EntryPoint = "UnmapDll", SetLastError = false, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
         private static extern int UnmapDll();
     }
 }
