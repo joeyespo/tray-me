@@ -84,7 +84,7 @@ namespace TrayMe
                     break;
                 }
 
-                if (target != null)
+                if (!string.IsNullOrEmpty(target))
                 {
                     if (Path.GetFullPath(target).ToLower() == Path.GetFullPath(Application.ExecutablePath).ToLower())
                     {
