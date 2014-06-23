@@ -33,6 +33,8 @@ namespace TrayMe
                 bool noExit = false;
                 bool show = false;
                 bool quiet = false;
+                var target = "";
+                var cmd = "";
 
                 // Get cmdline options
                 int i = 0;
@@ -48,102 +50,111 @@ namespace TrayMe
                         {
                             case "-h":
                                 ShowHelp();
-                                break;
+                                continue;
 
                             case "-q":
                                 quiet = true;
-                                break;
+                                continue;
 
                             case "-s":
                                 show = true;
-                                break;
+                                continue;
 
                             case "-x":
                                 noExit = true;
-                                break;
+                                continue;
+                            
+                            default:
+                                continue;
                         }
+                    }
+
+                    target = args[i];
+
+                    while (Path.GetExtension(target).ToLower() == ".lnk")
+                        target = (new System.ShellShortcut.ShellShortcut(target)).Path;
+
+                    if (target == "")
+                        continue;
+
+                    cmd = i + 1 < args.Length
+                        ? string.Join(" ", args, i + 1, args.Length - 1).Trim()
+                        : "";
+
+                    break;
+                }
+
+                if (target != null)
+                {
+                    if (Path.GetFullPath(target).ToLower() == Path.GetFullPath(Application.ExecutablePath).ToLower())
+                    {
+                        if (!quiet)
+                            MessageBox.Show("Cannot tray self.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
-                        string s = args[i];
-                        while (Path.GetExtension(s).ToLower() == ".lnk")
-                            s = (new System.ShellShortcut.ShellShortcut(s)).Path;
+                        // Start app process
+                        ProcessStartInfo startInfo = new ProcessStartInfo(target, cmd);
+                        if (!show)
+                            startInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                        startInfo.UseShellExecute = true;
+                        startInfo.CreateNoWindow = false;
+                        Process process = null;
+                        try
+                        {
+                            process = Process.Start(startInfo);
+                        }
+                        catch (Win32Exception)
+                        {
+                        }
 
-                        if (s == "")
-                            continue;
-
-                        if (Path.GetFullPath(s).ToLower() == Path.GetFullPath(Application.ExecutablePath).ToLower())
+                        if (process == null)
                         {
                             if (!quiet)
-                                MessageBox.Show("Cannot tray self.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Application could not be started.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         else
                         {
-                            // Start app process
-                            ProcessStartInfo startInfo = new ProcessStartInfo(s, (((i + 1) < args.Length) ? (string.Join(" ", args, (i + 1), (args.Length - 1))) : ("")).Trim());
-                            if (!show)
-                                startInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                            startInfo.UseShellExecute = true;
-                            startInfo.CreateNoWindow = false;
-                            Process process = null;
-                            try
-                            {
-                                process = Process.Start(startInfo);
-                            }
-                            catch (Win32Exception)
-                            {
-                            }
+                            // Wait for idle input .. wait for application to be done loading
+                            process.WaitForInputIdle();
+                            process.Refresh();
 
-                            if (process == null)
+                            // Attach to app's main window
+                            if (process.HasExited)
                             {
                                 if (!quiet)
-                                    MessageBox.Show("Application could not be started.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show("Application exited before it could be trayed.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
-                                // Wait for idle input .. wait for application to be done loading
-                                process.WaitForInputIdle();
-                                process.Refresh();
 
-                                // Attach to app's main window
-                                if (process.HasExited)
+                                IntPtr hWnd = process.MainWindowHandle;
+                                if (hWnd == IntPtr.Zero)
                                 {
                                     if (!quiet)
-                                        MessageBox.Show("Application exited before it could be trayed.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        MessageBox.Show("Could not find application's main window.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                                 else
                                 {
-                                    IntPtr hWnd = process.MainWindowHandle;
-
-                                    if (hWnd == IntPtr.Zero)
+                                    hWndInitial = hWnd;
+                                    if (!show)
                                     {
-                                        if (!quiet)
-                                            MessageBox.Show("Could not find application's main window.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    }
-                                    else
-                                    {
-                                        hWndInitial = hWnd;
-                                        if (!show)
-                                        {
-                                            Win32.WINDOWPLACEMENT wp = new Win32.WINDOWPLACEMENT();
-                                            Win32.GetWindowPlacement(hWnd, ref wp);
+                                        Win32.WINDOWPLACEMENT wp = new Win32.WINDOWPLACEMENT();
+                                        Win32.GetWindowPlacement(hWnd, ref wp);
 
-                                            // Hide (close) window only if still minimized
-                                            if ((wp.showCmd == Win32.SW_MINIMIZE) || (wp.showCmd == Win32.SW_SHOWMINIMIZED))
-                                                Win32.SendMessage(hWnd, Win32.WM_CLOSE, 0, 0);
-                                        }
+                                        // Hide (close) window only if still minimized
+                                        if ((wp.showCmd == Win32.SW_MINIMIZE) || (wp.showCmd == Win32.SW_SHOWMINIMIZED))
+                                            Win32.SendMessage(hWnd, Win32.WM_CLOSE, 0, 0);
                                     }
                                 }
                             }
                         }
-
-                        // Exit if done
-                        if (!noExit)
-                            return;
-
-                        break;
                     }
                 }
+
+                // Exit if done
+                if (!noExit)
+                    return;
             }
 
             using (MainForm form = new MainForm())
