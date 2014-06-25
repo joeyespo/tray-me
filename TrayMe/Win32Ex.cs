@@ -7,6 +7,21 @@ using System.Runtime.InteropServices;
 /// </summary>
 internal class Win32Ex : Win32
 {
+    [StructLayout(LayoutKind.Sequential)]
+    class MSG_INFO
+    {
+        [MarshalAs(UnmanagedType.LPStruct)]
+        public IntPtr caller;
+
+        [MarshalAs(UnmanagedType.LPStr)]
+        public string info;
+
+        [MarshalAs(UnmanagedType.I4)]
+        public int errnum;
+    }
+
+    delegate void EnumWindowsCallback(IntPtr hWnd, IntPtr param);
+
     public static string GetWindowText(IntPtr hWnd)
     {
         int cch;
@@ -172,5 +187,21 @@ internal class Win32Ex : Win32
         if (bProcessAncestor)
             return (dwProcess == dwProcessOwner);
         return (dwThread == dwThreadOwner);
+    }
+
+    public static IntPtr FindWindowByPartialTitle(string title)
+    {
+        IntPtr hWndResult = IntPtr.Zero;
+
+        EnumWindowsCallback enumFunc = (IntPtr hWnd, IntPtr param) =>
+        {
+            if (GetWindowText(hWnd).Contains(title))
+                hWndResult = hWnd;
+        };
+
+        var lpEnumFunc = Marshal.GetFunctionPointerForDelegate(enumFunc);
+        Win32.EnumWindows(lpEnumFunc, 0);
+
+        return hWndResult;
     }
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TrayMe
@@ -14,6 +15,8 @@ namespace TrayMe
     /// </summary>
     internal static class Program
     {
+        delegate T TryFunction<T>();
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -34,6 +37,7 @@ namespace TrayMe
                 var show = false;
                 var quiet = false;
                 var target = "";
+                var title = "";
                 var cmd = "";
 
                 // Get cmdline options
@@ -60,6 +64,19 @@ namespace TrayMe
                                 show = true;
                                 continue;
 
+                            case "-t":
+                                if (i + 1 >= args.Length)
+                                {
+                                    MessageBox.Show("Argument '-t' requires a value.");
+                                    return;
+                                }
+                                else
+                                {
+                                    i++;
+                                    title = args[i];
+                                }
+                                continue;
+
                             case "-x":
                                 andExit = false;
                                 continue;
@@ -82,7 +99,7 @@ namespace TrayMe
                     var process = RunProcess(target, cmd, show, quiet);
                     if (process != null)
                     {
-                        hWnd = FindWindow(process, quiet);
+                        hWnd = FindWindow(process, title, quiet);
                         if (hWnd != IntPtr.Zero)
                         {
                             if (!show)
@@ -159,7 +176,7 @@ namespace TrayMe
             return process;
         }
 
-        static IntPtr FindWindow(Process process, bool quiet)
+        static IntPtr FindWindow(Process process, string title, bool quiet)
         {
             // Attach to app's main window
             if (process.HasExited)
@@ -167,6 +184,14 @@ namespace TrayMe
                 if (!quiet)
                     MessageBox.Show("Application exited before it could be trayed.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return IntPtr.Zero;
+            }
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                var hWnd = TryMany<IntPtr>(() => Win32Ex.FindWindowByPartialTitle(title));
+                if (hWnd == IntPtr.Zero && !quiet)
+                    MessageBox.Show("Could not find application's \"" + title + "\" window.", "TrayMe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return hWnd;
             }
 
             var hMainWindow = process.MainWindowHandle;
@@ -213,6 +238,7 @@ namespace TrayMe
             sb.AppendLine("Options:");
             sb.AppendLine(" -h          -  displays this help message.");
             sb.AppendLine(" -s          -  show window; do not close to tray.");
+            sb.AppendLine(" -t=<title>  -  tray title instead of main window.");
             sb.AppendLine(" -q          -  quiet mode; display no command line errors.");
             sb.AppendLine(" -x          -  do not exit when trayed by command line.");
             sb.AppendLine();
