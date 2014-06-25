@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace TrayMe
 {
     /// <summary>
-    /// Represents a ...
+    /// Represents the TrayMe application.
     /// </summary>
     internal static class Program
     {
