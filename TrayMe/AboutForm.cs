@@ -61,7 +61,7 @@ namespace TrayMe
             try
             {
                 // Call the Process.Start method to open the default browser with a URL:
-                System.Diagnostics.Process.Start("http://www.uber-ware.com");
+                System.Diagnostics.Process.Start("http://joeyespo.com");
             }
             catch (Win32Exception)
             {
@@ -106,7 +106,7 @@ namespace TrayMe
 
         #endregion
 
-        private const string AppTitle = "TrayMe [Stand-Alone Version]";
+        private const string AppTitle = "TrayMe";
         private const string AppDescription = "TrayMe is a Windows Tool that easily helps a user organize his or her windows and save them from window congestion by use of the System Tray.";
         // Note: the icon is located on the window.
     }

@@ -121,10 +121,11 @@
   <data name="picLogo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAJBJREFUWEftl9EK
-        gCAMRf3/v/ELLaFgjM0tdbaHG0hQkWdn3FGl4ICBZAbazXNiqWW3WlvoegoEAAzAwHcD73ygMaXXpPkh
-        RXo6hh4AzwxZAugb9BeMzhZEKABtgwayDECrl0yEG0gBwJPAoUYWtrRAA+BR3BpDq7fe+9MGvBtYzwEA
-        BkwDf38VJ/tLAM4BAxfS5Zfw1bpL8wAAAABJRU5ErkJggg==
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAN1JREFUWEftjUEK
+        xDAMxPr/3/SF3Qg3YIKcvbjLHioQLRkPc7y8/BvXjyy5zvN6VDZiytFSp2zElKOlTtmIKUdLnbIRU46W
+        OmUjphwtdcpGTDla6pSNmHK0hGRrnt/mfzbfTu+sREtItub5bdfN3p0SLeHMvn2/yd2wREs4s903y5t5
+        5yVawpzZ/66b5W5YoiXMmf3vulnuhiVawiqb77tulrthiZawyuY739X1Nt2VaKlTNmLK0VKnbMSUo6VO
+        2YgpR0udshFTjpY6ZSOmHC11ykZMOfPgaV9ebo7jA9Lll/CZVZklAAAAAElFTkSuQmCC
 </value>
   </data>
   <metadata name="panelAbout.DrawGrid" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

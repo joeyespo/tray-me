@@ -100,16 +100,16 @@
             this.linkHomepageLink.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(175)))), ((int)(((byte)(162)))));
             this.linkHomepageLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.linkHomepageLink.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(175)))), ((int)(((byte)(162)))));
-            this.linkHomepageLink.Location = new System.Drawing.Point(144, 136);
+            this.linkHomepageLink.Location = new System.Drawing.Point(184, 136);
             this.linkHomepageLink.Name = "linkHomepageLink";
-            this.linkHomepageLink.Size = new System.Drawing.Size(137, 15);
+            this.linkHomepageLink.Size = new System.Drawing.Size(95, 15);
             this.linkHomepageLink.TabIndex = 3;
             this.linkHomepageLink.TabStop = true;
-            this.linkHomepageLink.Text = "www.uber-ware.com";
+            this.linkHomepageLink.Text = "joeyespo.com";
             this.linkHomepageLink.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(154)))), ((int)(((byte)(175)))), ((int)(((byte)(162)))));
-            this.linkHomepageLink.MouseLeave += new System.EventHandler(this.linkHomepageLink_MouseLeave);
             this.linkHomepageLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkHomepageLink_LinkClicked);
             this.linkHomepageLink.MouseEnter += new System.EventHandler(this.linkHomepageLink_MouseEnter);
+            this.linkHomepageLink.MouseLeave += new System.EventHandler(this.linkHomepageLink_MouseLeave);
             // 
             // labelHomepageTitle
             // 
@@ -184,8 +184,9 @@
             this.labelRevision.Size = new System.Drawing.Size(51, 13);
             this.labelRevision.TabIndex = 4;
             this.labelRevision.Text = "Revision:";
+            this.labelRevision.Visible = false;
             // 
-            // frmAbout
+            // AboutForm
             // 
             this.AcceptButton = this.buttonClose;
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -200,7 +201,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmAbout";
+            this.Name = "AboutForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About";

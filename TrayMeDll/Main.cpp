@@ -1,8 +1,8 @@
 // TrayMe Dll
 // By Joe Esposito
-// 2004-07-26, 2010-01-01
+// Modified: 2004-07-26, 2010-01-01, 2014-06-09
 // 
-// HookInjEx by Robert Kuster
+// Original HookInjEx by Robert Kuster
 // 
 // Note:
 //   Use this at your own risk. No responsibilities for

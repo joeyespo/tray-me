@@ -12,9 +12,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TrayMe")]
-[assembly: AssemblyCopyright("Copyright (C) 2004-2011 Joe Esposito")]
+[assembly: AssemblyCopyright("Copyright (C) 2004-2014 Joe Esposito")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
 
 //
 // Version information for an assembly consists of the following four values:

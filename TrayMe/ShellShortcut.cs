@@ -17,7 +17,7 @@
 *
 * Copyright ©2001-2002, Mattias Sjögren
 * 
-* Modified 10/28/2004 by Joe Esposito:
+* Modified 2004-10-28 by Joe Esposito:
 *   Merged the two files into one
 *
 **************************************************************************/
