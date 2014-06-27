@@ -6,14 +6,6 @@ TrayMe
 TrayMe is a small application that allows you send a window to the notification area.
 
 
-Why
----
-
-Some long-running applications don't have the option to send to the notification area, but
-have no other reason to be left open. Examples include some email and chat applications,
-or even long-running browser windows that take up valuable tab space.
-
-
 How to use it
 -------------
 
@@ -25,6 +17,14 @@ You can now click the "X" on the targeted application and it will be sent to
 the tray area instead of exiting.
 
 ![TrayMe Tray Screenshot](Graphics/Screenshot-03.png)
+
+
+Why
+---
+
+Some long-running applications don't have the option to send to the notification area, but
+have no other reason to be left open. Examples include some email and chat applications,
+or even long-running browser windows that take up valuable tab space.
 
 
 How it works
