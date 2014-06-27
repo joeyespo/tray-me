@@ -100,14 +100,8 @@ namespace TrayMe
                     if (process != null)
                     {
                         hWnd = FindWindow(process, title, quiet);
-                        if (hWnd != IntPtr.Zero)
-                        {
-                            if (!show)
-                                HideWindow(hWnd);
-                        }
                     }
-
-                    // Exit if done
+                    // Exit if there was a problem
                     if (hWnd == IntPtr.Zero && andExit)
                         return;
                 }
@@ -122,7 +116,6 @@ namespace TrayMe
                     if (andExit)
                         return;
                 }
-
                 Application.Run(form);
             }
         }
