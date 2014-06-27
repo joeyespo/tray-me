@@ -225,7 +225,7 @@ namespace TrayMe
 
             sb.Append("Usage:");
             sb.Append(Path.GetFileName(Application.ExecutablePath));
-            sb.AppendLine(" [options] target cmd");
+            sb.AppendLine(" [options] [target [cmd]]");
             sb.AppendLine();
 
             sb.AppendLine("Options:");
